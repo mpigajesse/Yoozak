@@ -140,4 +140,46 @@ POST /api/clients/clients/
 ```
 GET /api/clients/clients/me/
 Authorization: Bearer <token>
+```
+
+### Test des API avec PowerShell
+
+#### Obtenir un token JWT
+```powershell
+$body = @{username='admin'; password='admin'} | ConvertTo-Json
+$response = Invoke-RestMethod -Uri "http://127.0.0.1:8000/api/token/" -Method Post -Body $body -ContentType "application/json"
+$token = $response.access
+$headers = @{Authorization = "Bearer $token"}
+```
+
+#### Lister tous les clients
+```powershell
+Invoke-RestMethod -Uri "http://127.0.0.1:8000/api/clients/clients/" -Method Get -Headers $headers
+```
+
+#### Récupérer le profil du client connecté
+```powershell
+Invoke-RestMethod -Uri "http://127.0.0.1:8000/api/clients/clients/me/" -Method Get -Headers $headers
+```
+
+#### Lister les favoris
+```powershell
+Invoke-RestMethod -Uri "http://127.0.0.1:8000/api/clients/favoris/" -Method Get -Headers $headers
+```
+
+#### Ajouter un produit aux favoris
+```powershell
+$favorisBody = @{produit=1} | ConvertTo-Json
+Invoke-RestMethod -Uri "http://127.0.0.1:8000/api/clients/favoris/" -Method Post -Headers $headers -Body $favorisBody -ContentType "application/json"
+```
+
+#### Lister les avis
+```powershell
+Invoke-RestMethod -Uri "http://127.0.0.1:8000/api/clients/avis/" -Method Get
+```
+
+#### Ajouter un avis
+```powershell
+$avisBody = @{produit=1; commentaire="Excellent produit !"; note=5} | ConvertTo-Json
+Invoke-RestMethod -Uri "http://127.0.0.1:8000/api/clients/avis/" -Method Post -Headers $headers -Body $avisBody -ContentType "application/json"
 ``` 

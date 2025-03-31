@@ -178,4 +178,59 @@ Authorization: Bearer <token>
 ```
 POST /api/commandes/codes-promo/5/validate/
 Authorization: Bearer <token>
+```
+
+### Test des API avec PowerShell
+
+#### Obtenir un token JWT
+```powershell
+$body = @{username='admin'; password='admin'} | ConvertTo-Json
+$response = Invoke-RestMethod -Uri "http://127.0.0.1:8000/api/token/" -Method Post -Body $body -ContentType "application/json"
+$token = $response.access
+$headers = @{Authorization = "Bearer $token"}
+```
+
+#### Lister les états de commande
+```powershell
+Invoke-RestMethod -Uri "http://127.0.0.1:8000/api/commandes/etats/" -Method Get -Headers $headers
+```
+
+#### Lister toutes les commandes
+```powershell
+Invoke-RestMethod -Uri "http://127.0.0.1:8000/api/commandes/commandes/" -Method Get -Headers $headers
+```
+
+#### Consulter ses propres commandes
+```powershell
+Invoke-RestMethod -Uri "http://127.0.0.1:8000/api/commandes/commandes/mes_commandes/" -Method Get -Headers $headers
+```
+
+#### Consulter son panier
+```powershell
+Invoke-RestMethod -Uri "http://127.0.0.1:8000/api/commandes/paniers/mon_panier/" -Method Get -Headers $headers
+```
+
+#### Ajouter un article au panier
+```powershell
+$panierBody = @{produit=1; quantite=2} | ConvertTo-Json
+Invoke-RestMethod -Uri "http://127.0.0.1:8000/api/commandes/paniers/" -Method Post -Headers $headers -Body $panierBody -ContentType "application/json"
+```
+
+#### Créer une commande
+```powershell
+$commandeBody = @{
+    adresse="123 Rue Example";
+    region="Paris";
+    etat_commande=1;
+    lignes=@(
+        @{produit=1; quantite=2}
+    )
+} | ConvertTo-Json -Depth 3
+
+Invoke-RestMethod -Uri "http://127.0.0.1:8000/api/commandes/commandes/" -Method Post -Headers $headers -Body $commandeBody -ContentType "application/json"
+```
+
+#### Valider un code promo
+```powershell
+Invoke-RestMethod -Uri "http://127.0.0.1:8000/api/commandes/codes-promo/1/validate/" -Method Post -Headers $headers
 ``` 

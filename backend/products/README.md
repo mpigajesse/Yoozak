@@ -112,4 +112,64 @@ python manage.py migrate products
 ```
 
 ### Administration
-Accédez à l'interface d'administration à l'adresse `/admin/` pour gérer les produits. 
+Accédez à l'interface d'administration à l'adresse `/admin/` pour gérer les produits.
+
+### Test des API avec PowerShell
+
+#### Obtenir un token JWT (si nécessaire pour des opérations d'écriture)
+```powershell
+$body = @{username='admin'; password='admin'} | ConvertTo-Json
+$response = Invoke-RestMethod -Uri "http://127.0.0.1:8000/api/token/" -Method Post -Body $body -ContentType "application/json"
+$token = $response.access
+$headers = @{Authorization = "Bearer $token"}
+```
+
+#### Lister tous les produits (accessible sans authentification)
+```powershell
+Invoke-RestMethod -Uri "http://127.0.0.1:8000/api/products/produits/" -Method Get
+```
+
+#### Obtenir les détails d'un produit spécifique
+```powershell
+Invoke-RestMethod -Uri "http://127.0.0.1:8000/api/products/produits/1/" -Method Get
+```
+
+#### Lister les catégories
+```powershell
+Invoke-RestMethod -Uri "http://127.0.0.1:8000/api/products/categories/" -Method Get
+```
+
+#### Rechercher des produits
+```powershell
+Invoke-RestMethod -Uri "http://127.0.0.1:8000/api/products/produits/?search=sport" -Method Get
+```
+
+#### Filtrer des produits par catégorie
+```powershell
+Invoke-RestMethod -Uri "http://127.0.0.1:8000/api/products/produits/?categories=1" -Method Get
+```
+
+#### Trier les produits par prix (croissant)
+```powershell
+Invoke-RestMethod -Uri "http://127.0.0.1:8000/api/products/produits/?ordering=prix" -Method Get
+```
+
+#### Trier les produits par prix (décroissant)
+```powershell
+Invoke-RestMethod -Uri "http://127.0.0.1:8000/api/products/produits/?ordering=-prix" -Method Get
+```
+
+#### Ajouter un nouveau produit (nécessite authentification)
+```powershell
+$produitBody = @{
+    nom="Chaussure de course XYZ";
+    prix=99.99;
+    description="Chaussure de sport légère et confortable";
+    type_de_semelle="Caoutchouc";
+    matieres_premieres=@{textile="nylon"; semelle="caoutchouc"} | ConvertTo-Json;
+    origine="France";
+    categories=@(1)
+} | ConvertTo-Json -Depth 3
+
+Invoke-RestMethod -Uri "http://127.0.0.1:8000/api/products/produits/" -Method Post -Headers $headers -Body $produitBody -ContentType "application/json"
+``` 

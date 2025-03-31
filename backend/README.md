@@ -56,6 +56,47 @@ Une documentation interactive est disponible via Swagger:
 - `/swagger/` - Interface Swagger
 - `/redoc/` - Interface ReDoc
 
+### Test des API
+
+#### Lancer le serveur de développement
+```powershell
+cd backend
+python manage.py runserver
+```
+
+#### Obtenir un token JWT (PowerShell)
+```powershell
+$body = @{username='admin'; password='admin'} | ConvertTo-Json
+$response = Invoke-RestMethod -Uri "http://127.0.0.1:8000/api/token/" -Method Post -Body $body -ContentType "application/json"
+$token = $response.access
+```
+
+#### Utiliser le token pour accéder aux API sécurisées (PowerShell)
+```powershell
+$headers = @{Authorization = "Bearer $token"}
+
+# Tester l'API des produits
+Invoke-RestMethod -Uri "http://127.0.0.1:8000/api/products/produits/" -Method Get -Headers $headers
+
+# Tester l'API des clients
+Invoke-RestMethod -Uri "http://127.0.0.1:8000/api/clients/clients/" -Method Get -Headers $headers
+
+# Tester l'API des commandes
+Invoke-RestMethod -Uri "http://127.0.0.1:8000/api/commandes/commandes/" -Method Get -Headers $headers
+```
+
+#### Tester avec Postman
+1. **Obtenir un token JWT**:
+   - Créer une requête POST vers `http://127.0.0.1:8000/api/token/`
+   - Dans l'onglet "Body", sélectionner "raw" et "JSON"
+   - Entrer le corps : `{"username": "admin", "password": "admin"}`
+   - Envoyer la requête et récupérer le token
+
+2. **Utiliser le token**:
+   - Créer une requête GET vers l'endpoint souhaité (par exemple `http://127.0.0.1:8000/api/clients/clients/`)
+   - Dans l'onglet "Authorization", sélectionner "Bearer Token" et coller le token
+   - Envoyer la requête
+
 ## Authentification
 
 Le projet utilise l'authentification JWT (JSON Web Tokens):
