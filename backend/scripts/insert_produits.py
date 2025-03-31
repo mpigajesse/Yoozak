@@ -9,7 +9,9 @@ import os
 import sys
 import random
 import json
+import requests
 from datetime import datetime, timedelta
+from pathlib import Path
 
 # Ajouter le répertoire parent au PYTHONPATH pour trouver les modules Django
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -22,7 +24,102 @@ django.setup()
 
 from django.db import transaction
 from django.utils import timezone
+from django.conf import settings
 from products.models import Produit, Article, Categories, SousCategories, Creative, Promotion, ProduitCategorie
+
+# Chemin où les images seront enregistrées
+MEDIA_ROOT = os.path.join(settings.BASE_DIR, 'media')
+PRODUCTS_MEDIA_ROOT = os.path.join(MEDIA_ROOT, 'products')
+
+# Créer les dossiers s'ils n'existent pas
+os.makedirs(PRODUCTS_MEDIA_ROOT, exist_ok=True)
+
+# URLs d'images Unsplash par type de chaussure
+UNSPLASH_IMAGES = {
+    "Baskets": [
+        "https://images.unsplash.com/photo-1597045566677-8cf032ed6634",
+        "https://images.unsplash.com/photo-1552346154-21d32810aba3",
+        "https://images.unsplash.com/photo-1549298916-b41d501d3772",
+        "https://images.unsplash.com/photo-1556048219-bb6978360b84",
+        "https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa"
+    ],
+    "Escarpins": [
+        "https://images.unsplash.com/photo-1543163521-1bf539c55dd2",
+        "https://images.unsplash.com/photo-1573100925118-870b8efc799d",
+        "https://images.unsplash.com/photo-1596703263926-eb0762ee17e4",
+        "https://images.unsplash.com/photo-1535043934128-cf0b28d52f95",
+        "https://images.unsplash.com/photo-1563208085-648526fc0a70"
+    ],
+    "Mocassins": [
+        "https://images.unsplash.com/photo-1605812860427-4024433a70fd",
+        "https://images.unsplash.com/photo-1614252235316-8c857d38b5f4",
+        "https://images.unsplash.com/photo-1531310197839-ccf54634509e",
+        "https://images.unsplash.com/photo-1626947346165-4c2288dadc2a",
+        "https://images.unsplash.com/photo-1603808033192-082d6919d3e1"
+    ],
+    "Bottes": [
+        "https://images.unsplash.com/photo-1520639888713-7851133b1ed0",
+        "https://images.unsplash.com/photo-1608256246200-53e635a5794a",
+        "https://images.unsplash.com/photo-1605812276795-3b6f4e82f200",
+        "https://images.unsplash.com/photo-1626947346165-4c2288dadc2a",
+        "https://images.unsplash.com/photo-1542838686-37da4a9fd1b3"
+    ],
+    "Sandales": [
+        "https://images.unsplash.com/photo-1603750103027-90222965dfcd",
+        "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a",
+        "https://images.unsplash.com/photo-1562273138-f46be4ebdf33",
+        "https://images.unsplash.com/photo-1611693757292-fee5f18133e5",
+        "https://images.unsplash.com/photo-1588850777267-ed552becaf2f"
+    ],
+    "Autre": [
+        "https://images.unsplash.com/photo-1491553895911-0055eca6402d",
+        "https://images.unsplash.com/photo-1560769629-975ec94e6a86",
+        "https://images.unsplash.com/photo-1525966222134-fcfa99b8ae77"
+    ]
+}
+
+# Images de secours au cas où une image ne peut être téléchargée
+FALLBACK_IMAGES = [
+    "https://images.unsplash.com/photo-1560769629-975ec94e6a86",
+    "https://images.unsplash.com/photo-1560769629-975ec94e6a86?ixlib=rb-4.0.3",
+    "https://images.unsplash.com/photo-1525966222134-fcfa99b8ae77?ixlib=rb-4.0.3",
+    "https://images.unsplash.com/photo-1549298916-b41d501d3772?ixlib=rb-4.0.3"
+]
+
+def download_image(url, save_path):
+    """Télécharge une image depuis une URL et la sauvegarde localement."""
+    try:
+        # Ajouter des paramètres Unsplash pour optimiser le téléchargement
+        if "unsplash.com" in url and "?" not in url:
+            url += "?ixlib=rb-4.0.3&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=800"
+        
+        response = requests.get(url, stream=True, timeout=10)
+        response.raise_for_status()
+        
+        with open(save_path, 'wb') as out_file:
+            for chunk in response.iter_content(chunk_size=8192):
+                out_file.write(chunk)
+        return True
+    except Exception as e:
+        print(f"❌ Erreur lors du téléchargement de l'image {url}: {e}")
+        return False
+
+def get_shoe_type(produit):
+    """Détermine le type de chaussure en fonction du nom du produit."""
+    nom = produit.nom.lower()
+    
+    if "basket" in nom or "air max" in nom or "superstar" in nom or "converse" in nom or "chuck taylor" in nom:
+        return "Baskets"
+    elif "escarpin" in nom or "pigalle" in nom or "romy" in nom or "jimmy choo" in nom or "louboutin" in nom:
+        return "Escarpins"
+    elif "mocassin" in nom or "gommino" in nom or "tod's" in nom:
+        return "Mocassins"
+    elif "botte" in nom or "timberland" in nom:
+        return "Bottes"
+    elif "sandale" in nom or "birkenstock" in nom or "arizona" in nom:
+        return "Sandales"
+    else:
+        return "Autre"
 
 def get_categories():
     """Récupère toutes les catégories existantes"""
@@ -188,40 +285,88 @@ def create_sample_articles(produits):
     return created_articles
 
 def create_sample_creatives(produits):
-    """Crée des créatives (médias) d'exemple pour chaque produit."""
+    """Crée des créatives (médias) d'exemple pour chaque produit et télécharge des images réelles."""
     # Types de médias possibles
     types_media = ["image_principale", "image_secondaire", "video_produit", "image_360"]
+    
+    # Créer les dossiers pour chaque type de chaussure
+    for shoe_type in ["Baskets", "Escarpins", "Mocassins", "Bottes", "Sandales", "Autre"]:
+        os.makedirs(os.path.join(PRODUCTS_MEDIA_ROOT, shoe_type.lower()), exist_ok=True)
     
     created_creatives = []
     
     for produit in produits:
-        # Créer au moins une image principale et quelques médias supplémentaires
+        # Déterminer le type de chaussure
+        shoe_type = get_shoe_type(produit)
+        
+        # Créer au moins une image principale et 1-2 médias supplémentaires
         medias_to_create = ["image_principale"]
         
-        # Ajouter 1 à 3 médias supplémentaires aléatoires
-        for _ in range(random.randint(1, 3)):
+        # Ajouter 1 à 2 médias supplémentaires aléatoires
+        for _ in range(random.randint(1, 2)):
             medias_to_create.append(random.choice(types_media[1:]))
         
         for media_type in medias_to_create:
-            # Générer une URL fictive selon le type de média
-            if media_type == "image_principale":
-                url = f"https://yoozak.com/media/products/{produit.nom.lower().replace(' ', '_')}_main.jpg"
-            elif media_type == "image_secondaire":
-                url = f"https://yoozak.com/media/products/{produit.nom.lower().replace(' ', '_')}_secondary_{random.randint(1, 3)}.jpg"
-            elif media_type == "video_produit":
-                url = f"https://yoozak.com/media/products/{produit.nom.lower().replace(' ', '_')}_video.mp4"
-            else:  # image_360
-                url = f"https://yoozak.com/media/products/{produit.nom.lower().replace(' ', '_')}_360.jpg"
+            # Vérifier si cette creative existe déjà pour ce produit/type
+            existing_creative = Creative.objects.filter(
+                produit=produit,
+                type_creative=media_type
+            ).first()
             
-            # Créer la creative
-            creative, created = Creative.objects.get_or_create(
+            if existing_creative:
+                created_creatives.append(existing_creative)
+                print(f"Creative existante: {existing_creative}")
+                continue
+            
+            # Générer les noms de fichiers
+            safe_product_name = produit.nom.lower().replace(' ', '_').replace("'", "")
+            filename = f"{safe_product_name}_{media_type}_{random.randint(1000, 9999)}.jpg"
+            
+            # Chemin complet pour l'image
+            relative_path = os.path.join(shoe_type.lower(), filename)
+            full_path = os.path.join(PRODUCTS_MEDIA_ROOT, relative_path)
+            
+            # URL pour enregistrer dans la base de données (relative à MEDIA_ROOT)
+            db_url = f"/media/products/{relative_path}"
+            
+            # Télécharger l'image
+            download_success = False
+            
+            # Essayer de télécharger une image pour le type spécifique de chaussure
+            if media_type in ["image_principale", "image_secondaire", "image_360"]:
+                # Choisir une URL aléatoire selon le type de chaussure
+                image_urls = UNSPLASH_IMAGES.get(shoe_type, UNSPLASH_IMAGES["Autre"])
+                
+                if image_urls:
+                    image_url = random.choice(image_urls)
+                    download_success = download_image(image_url, full_path)
+            
+            # Si le téléchargement échoue ou s'il s'agit d'un type de média non-image, utiliser une URL de secours
+            if not download_success:
+                fallback_url = random.choice(FALLBACK_IMAGES)
+                download_success = download_image(fallback_url, full_path)
+            
+            # Si même l'URL de secours échoue, utiliser une URL fictive
+            if not download_success:
+                print(f"⚠️ Impossible de télécharger une image pour {produit.nom}, utilisation d'une URL fictive")
+                # Utilisation d'URL relative par rapport à MEDIA_URL
+                db_url = f"/media/products/default.jpg"
+                # Essayer de copier une image par défaut si elle existe
+                default_img = os.path.join(PRODUCTS_MEDIA_ROOT, "default.jpg")
+                if not os.path.exists(default_img):
+                    # Toucher un fichier vide pour éviter les erreurs 404
+                    with open(default_img, 'w') as f:
+                        f.write("Placeholder")
+            
+            # Créer l'entrée Creative
+            creative = Creative.objects.create(
                 produit=produit,
                 type_creative=media_type,
-                url=url
+                url=db_url
             )
             
             created_creatives.append(creative)
-            print(f"Creative {'créée' if created else 'existante'}: {creative}")
+            print(f"Creative créée: {creative} - URL: {db_url}")
     
     return created_creatives
 
