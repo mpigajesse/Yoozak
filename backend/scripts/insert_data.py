@@ -118,6 +118,7 @@ def create_sample_code_promos():
     
     return created_codes
 
+# TODO: Ajouter les clients  dans la table client
 def create_sample_clients():
     """Crée des clients d'exemple."""
     clients = [
@@ -127,7 +128,7 @@ def create_sample_clients():
         {"nom": "Lambert", "prenom": "Marie", "email": "marie.lambert@example.com", "phone": "0678912345"},
         {"nom": "Bernard", "prenom": "Lucie", "email": "lucie.bernard@example.com", "phone": "0645678912"},
     ]
-    
+#creation des clients
     created_clients = []
     for client_data in clients:
         client, created = Client.objects.get_or_create(
