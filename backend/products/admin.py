@@ -3,6 +3,8 @@ from .models import (
     Categories, SousCategories, Produit, Article, 
     Creative, Promotion, Catalogue, ProduitCategorie, ProduitCatalogue
 )
+from django.utils.safestring import mark_safe
+from django.utils.translation import gettext_lazy as _
 
 @admin.register(Categories)
 class CategoriesAdmin(admin.ModelAdmin):
@@ -51,9 +53,17 @@ class ArticleAdmin(admin.ModelAdmin):
 
 @admin.register(Creative)
 class CreativeAdmin(admin.ModelAdmin):
-    list_display = ('produit', 'type_creative', 'url')
+    """Admin pour les médias (Creative)"""
+    list_display = ('produit', 'type_creative', 'url', 'apercu_url')
     list_filter = ('type_creative', 'produit')
-    search_fields = ('produit__nom',)
+    search_fields = ('produit__nom', 'type_creative')
+    
+    def apercu_url(self, obj):
+        """Affiche un aperçu de l'URL sous forme de lien cliquable"""
+        if obj.url:
+            return mark_safe(f'<a href="{obj.url}" target="_blank">Voir</a>')
+        return '-'
+    apercu_url.short_description = _("Aperçu")
 
 @admin.register(Promotion)
 class PromotionAdmin(admin.ModelAdmin):
@@ -66,3 +76,15 @@ class CatalogueAdmin(admin.ModelAdmin):
     list_display = ('nom', 'description', 'date_creation')
     search_fields = ('nom',)
     inlines = [ProduitCatalogueInline]
+
+@admin.register(ProduitCategorie)
+class ProduitCategorieAdmin(admin.ModelAdmin):
+    list_display = ('produit', 'categorie')
+    list_filter = ('categorie',)
+    search_fields = ('produit__nom', 'categorie__nom')
+
+@admin.register(ProduitCatalogue)
+class ProduitCatalogueAdmin(admin.ModelAdmin):
+    list_display = ('produit', 'catalogue')
+    list_filter = ('catalogue',)
+    search_fields = ('produit__nom', 'catalogue__nom')

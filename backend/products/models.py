@@ -61,6 +61,11 @@ class ProduitCategorie(models.Model):
     
     class Meta:
         unique_together = ('produit', 'categorie')
+        verbose_name = _("Produit - Catégorie")
+        verbose_name_plural = _("Produits - Catégories")
+    
+    def __str__(self):
+        return f"{self.produit.nom} - {self.categorie.nom}"
 
 class Article(models.Model):
     """Modèle pour les articles (instances spécifiques de produits)"""
@@ -94,8 +99,8 @@ class Creative(models.Model):
     url = models.URLField(_("URL"), max_length=255)
     
     class Meta:
-        verbose_name = _("Média")
-        verbose_name_plural = _("Médias")
+        verbose_name = "Creative"
+        verbose_name_plural = "Creatives"
         
     def __str__(self):
         return f"{self.type_creative} - {self.produit.nom}"
@@ -146,3 +151,8 @@ class ProduitCatalogue(models.Model):
     
     class Meta:
         unique_together = ('produit', 'catalogue')
+        verbose_name = _("Produit - Catalogue")
+        verbose_name_plural = _("Produits - Catalogues")
+    
+    def __str__(self):
+        return f"{self.produit.nom} - {self.catalogue.nom}"

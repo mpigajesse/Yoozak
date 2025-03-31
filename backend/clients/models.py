@@ -32,6 +32,7 @@ class Favoris(models.Model):
         related_name="favoris",
         verbose_name=_("Produit")
     )
+    date_ajout = models.DateTimeField(_("Date d'ajout"), auto_now_add=True)
     
     class Meta:
         verbose_name = _("Favori")
