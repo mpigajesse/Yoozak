@@ -8,6 +8,11 @@ Cette documentation présente toutes les requêtes API disponibles pour le proje
 - [**API_PRODUCTS.md**](./API_PRODUCTS.md) - API pour les produits, catégories et sous-catégories
 - [**API_CLIENTS.md**](./API_CLIENTS.md) - API pour les clients, favoris et avis
 - [**API_COMMANDES.md**](./API_COMMANDES.md) - API pour les commandes, paniers, retours et remises
+- [**TESTING_DRF.md**](./TESTING_DRF.md) - Guide pour tester via l'interface Django REST Framework
+
+## Autres documentations
+
+- [**../ADMIN_INTERFACE.md**](../ADMIN_INTERFACE.md) - Documentation de l'interface d'administration améliorée
 
 ## Comment tester les API
 

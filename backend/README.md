@@ -56,6 +56,14 @@ Une documentation interactive est disponible via Swagger:
 - `/swagger/` - Interface Swagger
 - `/redoc/` - Interface ReDoc
 
+### Documentation API pour les tests
+La documentation détaillée pour tester chaque API est disponible dans le dossier `docs/api/`:
+- [`API_TESTING.md`](../docs/api/API_TESTING.md) - Guide d'authentification et utilisation des tokens JWT
+- [`API_PRODUCTS.md`](../docs/api/API_PRODUCTS.md) - Documentation des endpoints pour les produits
+- [`API_CLIENTS.md`](../docs/api/API_CLIENTS.md) - Documentation des endpoints pour les clients
+- [`API_COMMANDES.md`](../docs/api/API_COMMANDES.md) - Documentation des endpoints pour les commandes
+- [`TESTING_DRF.md`](../docs/api/TESTING_DRF.md) - Guide pour tester via l'interface Django REST Framework
+
 ### Test des API
 
 #### Lancer le serveur de développement
@@ -96,6 +104,37 @@ Invoke-RestMethod -Uri "http://127.0.0.1:8000/api/commandes/commandes/" -Method 
    - Créer une requête GET vers l'endpoint souhaité (par exemple `http://127.0.0.1:8000/api/clients/clients/`)
    - Dans l'onglet "Authorization", sélectionner "Bearer Token" et coller le token
    - Envoyer la requête
+
+## Interface d'administration
+
+Le projet dispose d'une interface d'administration Django améliorée accessible à l'URL `/admin/`.
+
+### Fonctionnalités spéciales
+
+#### Paniers
+- Aperçu du prix total
+- Conversion des paniers en commandes en un clic
+- Filtres et recherche améliorés
+
+#### Commandes
+- Visualisation des lignes de commande avec calcul de totaux
+- Gestion des états de commande
+- Suivi des retours et remises
+
+#### Produits
+- Gestion des relations entre produits, catégories et catalogues
+- Aperçu des médias associés (Creative)
+- Navigation facilitée entre les entités liées
+
+#### Codes Promo
+- Indication visuelle du statut (actif, expiré, etc.)
+- Actions groupées pour activer/désactiver
+- Calcul du montant économisé pour les remises
+
+### Accès
+- URL: `http://127.0.0.1:8000/admin/`
+- Utilisateur: `admin`
+- Mot de passe: `admin` (ou celui défini lors de la création)
 
 ## Authentification
 
