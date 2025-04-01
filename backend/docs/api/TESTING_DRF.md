@@ -74,6 +74,52 @@ Pour vous authentifier sur les autres pages:
 #### Retours
 - URL: `http://127.0.0.1:8000/api/commandes/retours/`
 
+## Accès aux Images (Creative API)
+
+L'API Creative permet d'accéder aux images des produits. Voici les endpoints disponibles :
+
+### Liste de toutes les images
+
+```http
+GET /api/products/creatives/
+```
+
+Exemple de réponse :
+```json
+[
+  {
+    "id": 1,
+    "type_creative": "image_principale",
+    "url": "/media/products/baskets/nike_air_max_90_image_principale_7401.jpg",
+    "product_id": 1
+  },
+  // ... autres images ...
+]
+```
+
+### Filtrer les images par produit
+
+```http
+GET /api/products/creatives/?produit=1
+```
+
+### Types de Creative disponibles
+- `image_principale` : Image principale du produit
+- `image_360` : Vue à 360 degrés du produit
+- `video_produit` : Vidéo du produit
+
+### Accès direct aux fichiers média
+
+Les fichiers média sont accessibles via l'URL de base :
+```http
+GET http://127.0.0.1:8000/media/products/{chemin_du_fichier}
+```
+
+Par exemple :
+```http
+GET http://127.0.0.1:8000/media/products/baskets/nike_air_max_90_image_principale_7401.jpg
+```
+
 ## Astuces utiles
 
 1. **Format des réponses**: Utilisez les boutons en bas de page pour basculer entre:

@@ -217,3 +217,21 @@ python manage.py runserver
 3. Commit les changements (`git commit -m 'Add some amazing feature'`)
 4. Push la branche (`git push origin feature/amazing-feature`)
 5. Ouvrir une Pull Request 
+
+## Gestion des Médias
+
+Les fichiers médias (images, vidéos) sont gérés via l'API Creative. Les fichiers sont stockés dans le dossier `media/products/` et sont organisés par catégories (baskets, sandales, etc.).
+
+Pour plus de détails sur l'utilisation de l'API Creative et l'accès aux médias, consultez la documentation dédiée dans `docs/api/TESTING_DRF.md`.
+
+Structure des médias :
+```
+media/
+└── products/
+    ├── baskets/
+    ├── sandales/
+    ├── mocassins/
+    ├── bottes/
+    ├── escarpins/
+    └── other/
+``` 
