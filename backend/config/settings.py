@@ -193,3 +193,17 @@ SIMPLE_JWT = {
     'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
     'TOKEN_TYPE_CLAIM': 'token_type',
 }
+
+# Configuration de Swagger (drf-yasg)
+SWAGGER_SETTINGS = {
+    'SECURITY_DEFINITIONS': {
+        'Bearer': {
+            'type': 'apiKey',
+            'name': 'Authorization',
+            'in': 'header',
+            'description': 'Entrez votre token JWT avec le préfixe "Bearer ". Exemple: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."'
+        }
+    },
+    'USE_SESSION_AUTH': False,
+    'DEFAULT_API_URL': 'http://localhost:8000/api/',
+}

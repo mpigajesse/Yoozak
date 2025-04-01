@@ -32,7 +32,7 @@ schema_view = get_schema_view(
     openapi.Info(
         title="Yoozak API",
         default_version='v1',
-        description="API pour l'application Yoozak",
+        description="API pour l'application Yoozak. \n\nPour vous authentifier, utilisez d'abord l'endpoint POST /api/token/ pour obtenir un token JWT, puis ajoutez-le dans l'en-tête Authorization sous la forme 'Bearer votre_token'.",
         terms_of_service="https://www.yoozak.com/terms/",
         contact=openapi.Contact(email="contact@yoozak.com"),
         license=openapi.License(name="Copyright Yoozak"),

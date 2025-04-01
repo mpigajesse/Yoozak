@@ -9,6 +9,7 @@ Cette documentation présente toutes les requêtes API disponibles pour le proje
 - [**API_CLIENTS.md**](./API_CLIENTS.md) - API pour les clients, favoris et avis
 - [**API_COMMANDES.md**](./API_COMMANDES.md) - API pour les commandes, paniers, retours et remises
 - [**TESTING_DRF.md**](./TESTING_DRF.md) - Guide pour tester via l'interface Django REST Framework
+- [**SWAGGER_JWT_GUIDE.md**](./SWAGGER_JWT_GUIDE.md) - Guide détaillé pour utiliser Swagger avec l'authentification JWT
 
 ## Autres documentations
 
@@ -16,10 +17,11 @@ Cette documentation présente toutes les requêtes API disponibles pour le proje
 
 ## Comment tester les API
 
-1. Utilisez Postman pour tester facilement les API
-2. Créez un environnement avec la variable `base_url` (ex: `http://127.0.0.1:8000`)
-3. Obtenez d'abord un token d'authentification comme décrit dans [API_TESTING.md](./API_TESTING.md)
-4. Utilisez ce token pour les requêtes authentifiées
+Vous avez plusieurs options pour tester les API :
+
+1. **Postman** - Voir [API_TESTING.md](./API_TESTING.md) pour plus de détails
+2. **Interface Django REST Framework** - Voir [TESTING_DRF.md](./TESTING_DRF.md) pour plus de détails
+3. **Interface Swagger** - Voir [SWAGGER_JWT_GUIDE.md](./SWAGGER_JWT_GUIDE.md) pour un guide détaillé
 
 ## Codes de statut HTTP
 
