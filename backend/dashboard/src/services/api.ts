@@ -25,16 +25,83 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
+// Intercepteur pour gérer les réponses et rafraîchir le token si nécessaire
+api.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    const originalRequest = error.config;
+    
+    // Si l'erreur est 401 (Unauthorized) et que ce n'est pas déjà une tentative de rafraîchissement
+    if (error.response?.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true;
+      
+      try {
+        // Essayer de rafraîchir le token
+        const refreshToken = localStorage.getItem("refreshToken");
+        if (!refreshToken) {
+          throw new Error("Aucun refresh token disponible");
+        }
+        
+        console.log("Tentative de rafraîchissement du token...");
+        const response = await axios.post(`${API_BASE_URL}/api/users/auth/refresh/`, {
+          refresh: refreshToken
+        });
+        
+        const { access } = response.data;
+        
+        // Mettre à jour le token dans localStorage
+        localStorage.setItem("token", access);
+        
+        // Mettre à jour l'en-tête d'autorisation de la requête originale
+        originalRequest.headers.Authorization = `Bearer ${access}`;
+        
+        console.log("Token rafraîchi avec succès, nouvelle tentative de la requête");
+        // Réessayer la requête originale avec le nouveau token
+        return axios(originalRequest);
+      } catch (refreshError) {
+        console.error("Échec du rafraîchissement du token:", refreshError);
+        // Si le rafraîchissement échoue, déconnecter l'utilisateur
+        localStorage.removeItem("token");
+        localStorage.removeItem("refreshToken");
+        
+        // Redirection vers la page de connexion si nous sommes dans un navigateur
+        if (typeof window !== 'undefined') {
+          window.location.href = "/login";
+        }
+      }
+    }
+    
+    return Promise.reject(error);
+  }
+);
+
 // Fonctions d'authentification
 export const loginUser = async (username: string, password: string) => {
   try {
     console.log(`Tentative de connexion avec ${username} à ${API_BASE_URL}/api/users/auth/login/`);
+    // Vérifier si localStorage est disponible (pour éviter les erreurs côté serveur)
+    if (typeof window === 'undefined') {
+      console.warn("localStorage n'est pas disponible (exécution côté serveur)");
+    }
+    
     const response = await axios.post(`${API_BASE_URL}/api/users/auth/login/`, {
       username,
       password
     });
     
     console.log("Réponse d'authentification:", response.data);
+    
+    // Vérifier que les tokens sont présents
+    if (!response.data.access || !response.data.refresh) {
+      console.error("Tokens manquants dans la réponse:", response.data);
+      throw new Error("Authentification incomplète: tokens manquants");
+    }
+
+    // Stocker immédiatement les tokens dans localStorage
+    localStorage.setItem("token", response.data.access);
+    localStorage.setItem("refreshToken", response.data.refresh);
+    console.log("Tokens stockés dans localStorage");
+    
     return response.data;
   } catch (error: unknown) {
     console.error("Erreur de connexion:", error);
@@ -79,8 +146,11 @@ export const getUserInfo = async () => {
     console.log("Récupération des informations utilisateur...");
     const token = localStorage.getItem("token");
     if (!token) {
+      console.error("Aucun token d'authentification dans localStorage");
       throw new Error("Aucun token d'authentification");
     }
+
+    console.log("Token trouvé:", token.substring(0, 10) + "...");
 
     // Configuration des headers pour toutes les requêtes
     const headers = {
@@ -88,13 +158,23 @@ export const getUserInfo = async () => {
       'Content-Type': 'application/json'
     };
 
-    // Utiliser l'endpoint de profil admin que nous avons créé
-    console.log("Tentative avec /api/users/profile/");
-    const response = await axios.get(`${API_BASE_URL}/api/users/profile/`, { headers });
-    console.log("Informations utilisateur récupérées:", response.data);
-    return response.data;
+    try {
+      // Tentative avec l'instance axios configurée
+      console.log("Tentative avec l'instance API configurée");
+      const response = await api.get("/api/users/profile/");
+      console.log("Informations utilisateur récupérées avec succès via api:", response.data);
+      return response.data;
+    } catch (innerError) {
+      console.error("Échec avec l'instance configurée:", innerError);
+      
+      // Tentative alternative avec axios direct
+      console.log("Tentative alternative avec axios direct");
+      const response = await axios.get(`${API_BASE_URL}/api/users/profile/`, { headers });
+      console.log("Informations utilisateur récupérées avec succès via axios direct:", response.data);
+      return response.data;
+    }
   } catch (error) {
-    console.error("Erreur de récupération des informations utilisateur:", error);
+    console.error("Erreur finale de récupération des informations utilisateur:", error);
     throw error;
   }
 };
