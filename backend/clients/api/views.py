@@ -3,6 +3,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
 from django.contrib.auth.models import User
+from django.db.models import Count, Q
 from ..models import Client, Favoris, Avis
 from .serializers import (
     UserSerializer, ClientSerializer, ClientCreateSerializer,
@@ -47,6 +48,51 @@ class ClientViewSet(viewsets.ModelViewSet):
             return Response(
                 {"detail": "Profil client non trouvé pour cet utilisateur."},
                 status=status.HTTP_404_NOT_FOUND
+            )
+    
+    @action(detail=False, methods=['get'], permission_classes=[permissions.IsAuthenticated])
+    def stats(self, request):
+        """Point de terminaison pour récupérer les statistiques sur les clients"""
+        try:
+            # Nombre total de clients
+            total_clients = Client.objects.count()
+            
+            # Nombre de clients actifs (avec au moins une commande)
+            clients_actifs = Client.objects.filter(commandes__isnull=False).distinct().count()
+            
+            # Clients créés ce mois-ci
+            from django.utils import timezone
+            import datetime
+            
+            today = timezone.now()
+            first_day_of_month = datetime.date(today.year, today.month, 1)
+            
+            # On utilise le User model car Client n'a pas de date_joined
+            nouveaux_clients = Client.objects.filter(
+                user__date_joined__gte=first_day_of_month
+            ).count()
+            
+            # Taux de rétention (clients ayant plus d'une commande / clients ayant au moins une commande)
+            # Ou valeur par défaut si pas de clients avec commandes
+            clients_avec_commandes = Client.objects.filter(commandes__isnull=False).distinct().count()
+            clients_avec_plusieurs_commandes = Client.objects.annotate(
+                nb_commandes=Count('commandes')
+            ).filter(nb_commandes__gt=1).count()
+            
+            taux_retention = 0
+            if clients_avec_commandes > 0:
+                taux_retention = round((clients_avec_plusieurs_commandes / clients_avec_commandes) * 100, 1)
+            
+            return Response({
+                'totalClients': total_clients,
+                'clientsActifs': clients_actifs,
+                'nouveauxClients': nouveaux_clients,
+                'tauxRetention': taux_retention
+            })
+        except Exception as e:
+            return Response(
+                {"detail": f"Erreur lors de la récupération des statistiques: {str(e)}"},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
 
 class FavorisViewSet(viewsets.ModelViewSet):

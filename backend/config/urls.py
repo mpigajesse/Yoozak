@@ -44,11 +44,15 @@ schema_view = get_schema_view(
 urlpatterns = [
     path('admin/', admin.site.urls),
     
+    # URLs des vues centrales
+    path('users/', include('users.urls')),
+    
     # API endpoints
     path('api/', include([
         path('products/', include('products.urls')),
         path('clients/', include('clients.urls')),
         path('commandes/', include('commandes.urls')),
+        path('users/', include('users.api.urls')),
         
         # Authentification JWT
         path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),

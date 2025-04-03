@@ -1,0 +1,571 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+    --primary: 201 67% 45%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 201 67% 45%;
+    --radius: 0.5rem;
+
+    /* Variables des couleurs de boutons */
+    --btn-primary: #3C50E0;
+    --btn-primary-hover: #3545C4;
+    --btn-primary-focus: #3C50E0;
+    --btn-primary-text: #FFFFFF;
+
+    --btn-secondary: #6c757d;
+    --btn-secondary-hover: #5a6268;
+    --btn-secondary-focus: #6c757d;
+    --btn-secondary-text: #FFFFFF;
+
+    --btn-success: #10B981;
+    --btn-success-hover: #0E9F6E;
+    --btn-success-focus: #10B981;
+    --btn-success-text: #FFFFFF;
+
+    --btn-warning: #F59E0B;
+    --btn-warning-hover: #D97706;
+    --btn-warning-focus: #F59E0B;
+    --btn-warning-text: #FFFFFF;
+
+    --btn-danger: #EF4444;
+    --btn-danger-hover: #DC2626;
+    --btn-danger-focus: #EF4444;
+    --btn-danger-text: #FFFFFF;
+
+    --btn-info: #3B82F6;
+    --btn-info-hover: #2563EB;
+    --btn-info-focus: #3B82F6;
+    --btn-info-text: #FFFFFF;
+
+    --btn-create: #10B981;
+    --btn-create-hover: #059669;
+    --btn-create-focus: #10B981;
+    --btn-create-text: #FFFFFF;
+
+    --btn-edit: #4F46E5;
+    --btn-edit-hover: #4338CA;
+    --btn-edit-focus: #4F46E5;
+    --btn-edit-text: #FFFFFF;
+
+    --btn-cancel: #6B7280;
+    --btn-cancel-hover: #4B5563;
+    --btn-cancel-focus: #6B7280;
+    --btn-cancel-text: #FFFFFF;
+
+    --btn-save: #0D9488;
+    --btn-save-hover: #0F766E;
+    --btn-save-focus: #0D9488;
+    --btn-save-text: #FFFFFF;
+
+    /* Variables responsives personnalisées */
+    --sidebar-width-expanded: 16rem; /* 256px */
+    --sidebar-width-collapsed: 5rem; /* 80px */
+    --header-height: 4rem; /* 64px */
+    --mobile-header-height: 3.5rem; /* 56px */
+    --content-padding-desktop: 1.5rem; /* 24px */
+    --content-padding-tablet: 1.25rem; /* 20px */
+    --content-padding-mobile: 1rem; /* 16px */
+    --transition-standard: 0.3s ease-in-out;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 201 67% 45%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 201 67% 45%;
+
+    /* Variables des couleurs de boutons en mode sombre */
+    --btn-primary: #3C50E0;
+    --btn-primary-hover: #4C5FF1;
+    --btn-primary-focus: #3C50E0;
+    --btn-primary-text: #FFFFFF;
+
+    --btn-secondary: #6c757d;
+    --btn-secondary-hover: #7d8590;
+    --btn-secondary-focus: #6c757d;
+    --btn-secondary-text: #FFFFFF;
+
+    --btn-success: #10B981;
+    --btn-success-hover: #0DD393;
+    --btn-success-focus: #10B981;
+    --btn-success-text: #FFFFFF;
+
+    --btn-warning: #F59E0B;
+    --btn-warning-hover: #FDBA2F;
+    --btn-warning-focus: #F59E0B;
+    --btn-warning-text: #FFFFFF;
+
+    --btn-danger: #EF4444;
+    --btn-danger-hover: #FF5555;
+    --btn-danger-focus: #EF4444;
+    --btn-danger-text: #FFFFFF;
+
+    --btn-info: #3B82F6;
+    --btn-info-hover: #60A5FA;
+    --btn-info-focus: #3B82F6;
+    --btn-info-text: #FFFFFF;
+
+    --btn-create: #10B981;
+    --btn-create-hover: #0DD393;
+    --btn-create-focus: #10B981;
+    --btn-create-text: #FFFFFF;
+
+    --btn-edit: #4F46E5;
+    --btn-edit-hover: #6366F1;
+    --btn-edit-focus: #4F46E5;
+    --btn-edit-text: #FFFFFF;
+
+    --btn-cancel: #6B7280;
+    --btn-cancel-hover: #7F8599;
+    --btn-cancel-focus: #6B7280;
+    --btn-cancel-text: #FFFFFF;
+
+    --btn-save: #0D9488;
+    --btn-save-hover: #0BBDA9;
+    --btn-save-focus: #0D9488;
+    --btn-save-text: #FFFFFF;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* Configuration responsivité professionnelle */
+@layer components {
+  /* Layout principal */
+  .app-container {
+    @apply min-h-screen bg-background text-foreground relative;
+  }
+
+  /* Sidebar styles */
+  .sidebar {
+    @apply fixed left-0 top-0 z-50 h-screen flex flex-col border-r border-border bg-card shadow-sm transition-all duration-300;
+    width: var(--sidebar-width-expanded);
+  }
+
+  .sidebar-collapsed {
+    width: var(--sidebar-width-collapsed);
+  }
+
+  /* Layout du contenu principal */
+  .main-content {
+    @apply transition-all duration-300 min-h-screen;
+    padding: var(--content-padding-desktop);
+    margin-left: var(--sidebar-width-expanded);
+  }
+
+  .main-content-sidebar-collapsed {
+    margin-left: var(--sidebar-width-collapsed);
+  }
+
+  /* Header styles */
+  .header {
+    @apply w-full flex items-center justify-between mb-6;
+    height: var(--header-height);
+  }
+
+  /* Responsive breakpoints personnalisés */
+  @media (min-width: 1280px) {
+    /* Desktop large */
+    .main-content {
+      padding: calc(var(--content-padding-desktop) * 1.25);
+    }
+  }
+
+  @media (max-width: 1024px) {
+    /* Tablette */
+    .sidebar {
+      @apply transform -translate-x-full;
+    }
+    
+    .sidebar-visible {
+      @apply translate-x-0;
+    }
+    
+    .main-content {
+      margin-left: 0;
+      padding: var(--content-padding-tablet);
+      padding-top: calc(var(--mobile-header-height) + var(--content-padding-tablet));
+    }
+    
+    .sidebar-overlay {
+      @apply fixed inset-0 z-40 bg-black/50 backdrop-blur-sm;
+    }
+  }
+
+  @media (max-width: 768px) {
+    /* Mobile */
+    .main-content {
+      padding: var(--content-padding-mobile);
+      padding-top: calc(var(--mobile-header-height) + var(--content-padding-mobile));
+    }
+    
+    .header {
+      @apply mb-4;
+      height: var(--mobile-header-height);
+    }
+  }
+
+  /* Conteneurs responsive */
+  .container-fluid {
+    @apply w-full px-3 sm:px-4 md:px-6 lg:px-8;
+  }
+  
+  .container-narrow {
+    @apply w-full max-w-3xl mx-auto px-3 sm:px-4 md:px-6;
+  }
+  
+  .container-medium {
+    @apply w-full max-w-5xl mx-auto px-3 sm:px-4 md:px-6;
+  }
+  
+  .container-wide {
+    @apply w-full max-w-7xl mx-auto px-3 sm:px-4 md:px-6;
+  }
+  
+  .container-full {
+    @apply w-full max-w-[1600px] mx-auto px-3 sm:px-4 md:px-6 lg:px-8;
+  }
+  
+  /* Grilles responsives pré-configurées */
+  .grid-responsive-2 {
+    @apply grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-6;
+  }
+  
+  .grid-responsive-3 {
+    @apply grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 md:gap-6;
+  }
+  
+  .grid-responsive-4 {
+    @apply grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 md:gap-6;
+  }
+  
+  .grid-responsive-cards {
+    @apply grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 md:gap-6;
+  }
+  
+  /* Espacement responsive pour les sections */
+  .section-spacing {
+    @apply py-4 sm:py-6 md:py-8 lg:py-12;
+  }
+  
+  .section-spacing-y {
+    @apply py-4 sm:py-6 md:py-8 lg:py-12;
+  }
+  
+  .section-spacing-x {
+    @apply px-3 sm:px-4 md:px-6 lg:px-8;
+  }
+  
+  /* Cartes responsives */
+  .card-responsive {
+    @apply rounded-xl bg-white p-4 sm:p-5 md:p-6 shadow-sm dark:bg-gray-800;
+  }
+  
+  /* Typographie responsive */
+  .title-responsive {
+    @apply text-xl sm:text-2xl md:text-3xl font-bold;
+  }
+  
+  .subtitle-responsive {
+    @apply text-lg sm:text-xl md:text-2xl font-semibold;
+  }
+  
+  /* Gap responsive pour les flex et grid */
+  .gap-responsive {
+    @apply gap-3 sm:gap-4 md:gap-6;
+  }
+  
+  /* Tableau responsive */
+  .table-responsive {
+    @apply w-full overflow-x-auto;
+  }
+  
+  /* Padding responsive */
+  .p-responsive {
+    @apply p-3 sm:p-4 md:p-6;
+  }
+  
+  .px-responsive {
+    @apply px-3 sm:px-4 md:px-6;
+  }
+  
+  .py-responsive {
+    @apply py-3 sm:py-4 md:py-6;
+  }
+}
+
+/* Media queries pour les comportements spécifiques */
+@media (max-width: 640px) {
+  .hide-on-mobile {
+    @apply hidden;
+  }
+  
+  .show-on-mobile {
+    @apply block;
+  }
+}
+
+@media (min-width: 641px) and (max-width: 1024px) {
+  .hide-on-tablet {
+    @apply hidden;
+  }
+  
+  .show-on-tablet {
+    @apply block;
+  }
+}
+
+@media (min-width: 1025px) {
+  .hide-on-desktop {
+    @apply hidden;
+  }
+  
+  .show-on-desktop {
+    @apply block;
+  }
+}
+
+/* Utilitaires d'accessibilité pour la responsivité */
+.visually-hidden {
+  @apply sr-only;
+}
+
+.focusable:focus {
+  @apply outline-none ring-2 ring-primary-500 ring-offset-2 dark:ring-offset-gray-800;
+}
+
+/* Améliorations pour la gestion des images responsives */
+.img-responsive {
+  @apply w-full h-auto object-cover;
+}
+
+.img-responsive-contain {
+  @apply w-full h-auto object-contain;
+}
+
+/* Utilitaires pour les transitions responsives */
+.transition-responsive {
+  @apply transition-all duration-300 ease-in-out;
+}
+
+/* Utilitaires pour les animations */
+.fade-in {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.slide-in {
+  animation: slideIn 0.3s ease-in-out;
+}
+
+/* Animation pour le changement de thème */
+.theme-transition {
+  animation: themeChange 0.5s ease;
+}
+
+/* Animation pour le message d'information */
+.animate-pulse-subtle {
+  animation: pulseSubtle 3s ease-in-out infinite;
+}
+
+@keyframes themeChange {
+  0% { opacity: 0.8; }
+  50% { opacity: 0.9; }
+  100% { opacity: 1; }
+}
+
+@keyframes pulseSubtle {
+  0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.3); }
+  50% { box-shadow: 0 0 0 8px rgba(59, 130, 246, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideIn {
+  from { transform: translateX(-20px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+/* Hide scrollbar but allow scrolling */
+.hide-scrollbar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;  /* Chrome, Safari, Opera */
+}
+
+/* Ajouter des styles personnalisés pour les scrollbars */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: hsl(var(--background));
+}
+
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--muted-foreground) / 0.3);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--muted-foreground) / 0.5);
+}
+
+/* Ajout de styles d'accessibilité tactile */
+@layer utilities {
+  /* Optimisations tactiles pour les appareils mobiles */
+  .touch-optimized {
+    @apply touch-manipulation;
+    -webkit-tap-highlight-color: transparent;
+    cursor: pointer;
+  }
+
+  /* Amélioration des zones de tap */
+  .tap-area-expanded {
+    @apply relative;
+  }
+  
+  .tap-area-expanded::after {
+    content: '';
+    @apply absolute inset-0 block;
+    margin: -10px;
+    z-index: -1;
+  }
+
+  /* Animations tactiles */
+  .tap-feedback {
+    @apply transition-transform duration-150;
+  }
+  
+  .tap-feedback:active {
+    @apply transform scale-95;
+  }
+
+  /* Focus visible accessible */
+  .focus-visible-ring {
+    @apply focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 focus-visible:ring-2 focus-visible:ring-primary-500;
+  }
+
+  /* Amélioration du comportement de défilement */
+  .scroll-smooth-touch {
+    @apply scroll-smooth overscroll-contain;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Prévention du zoom sur les inputs */
+  .prevent-zoom {
+    @apply text-base;
+    font-size: 16px; /* Empêche le zoom iOS sur focus */
+  }
+}
+
+/* Optimisations pour le mode sombre */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --tap-highlight-color: rgba(255, 255, 255, 0.1);
+  }
+
+  .dark input,
+  .dark textarea,
+  .dark select {
+    @apply bg-gray-800 border-gray-700 text-white placeholder-gray-400;
+  }
+}
+
+/* Prévention des problèmes de survol au toucher */
+@media (hover: hover) {
+  .hover-effect {
+    @apply transition-colors duration-200;
+  }
+}
+
+@media (hover: none) {
+  .hover-effect {
+    @apply transition-none;
+  }
+  
+  /* Désactiver les effets de survol sur appareils tactiles */
+  .hover\:bg-gray-100:hover {
+    @apply bg-transparent;
+  }
+}
+
+/* Amélioration de la taille des éléments interactifs pour le mobile */
+@media (max-width: 640px) {
+  .mobile-interactive {
+    @apply min-h-[44px] min-w-[44px]; /* Respecter les recommandations d'Apple */
+  }
+  
+  /* Espacement des éléments interactifs */
+  .mobile-spaced > * + * {
+    @apply mt-2;
+  }
+  
+  /* Amélioration de la taille des textes */
+  .mobile-text {
+    @apply text-base;
+  }
+}
+
+/* Animations plus fluides sur appareils mobiles */
+.mobile-animation {
+  @apply transition-transform will-change-transform;
+}
+
+/* Prévention du scrolljacking et des animations perturbantes */
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+} 
