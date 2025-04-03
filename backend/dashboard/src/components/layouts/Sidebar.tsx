@@ -227,16 +227,16 @@ export default function Sidebar({
           {!isCollapsed && (
             <div className="mb-2 px-4 text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
               Menu Principal
-            </div>
-          )}
+        </div>
+      )}
           {sidebarItems.map((item, idx) => (
-            <SidebarItem
+              <SidebarItem
               key={idx}
-              icon={item.icon}
-              label={item.label}
-              href={item.href}
-              isCollapsed={isCollapsed && !isMobile && !isTablet}
-              subItems={item.subItems}
+                icon={item.icon}
+                label={item.label}
+                href={item.href}
+                isCollapsed={isCollapsed && !isMobile && !isTablet}
+                subItems={item.subItems}
               onMobileClick={handleMobileClose}
             />
           ))}
@@ -246,8 +246,8 @@ export default function Sidebar({
         <div className="mt-6 px-3">
           <button 
             className={`flex w-full items-center ${!isCollapsed || isMobile || isTablet ? 'gap-3' : 'justify-center'} rounded-lg bg-gray-100 px-3 py-2.5 text-red-600 hover:bg-red-50 dark:bg-gray-700 dark:text-red-400 dark:hover:bg-red-900/20 transition duration-150 ease-in-out`}
-            onClick={logout}
-          >
+          onClick={logout}
+        >
             <ArrowRightOnRectangleIcon className="h-5 w-5" />
             {(!isCollapsed || isMobile || isTablet) && <span>Déconnexion</span>}
           </button>
@@ -373,10 +373,10 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
           <ul className="pl-4 pt-1 mobile-spaced">
             {subItems.map((item, index) => (
               <li key={index} className="mt-1">
-                <Link
+                  <Link
                   href={item.href}
                   onClick={handleClick}
-                  className={cn(
+                    className={cn(
                     "flex items-center rounded-md p-2 text-sm transition-colors",
                     "hover:bg-primary-50 hover:text-primary-800",
                     "dark:hover:bg-gray-800 dark:hover:text-gray-100",
@@ -399,7 +399,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
                     <div className="mr-2 h-2 w-2 rounded-full bg-gray-400 dark:bg-gray-600" />
                   )}
                   <span className={cn("truncate", isMobile && "mobile-text")}>{item.label}</span>
-                </Link>
+                  </Link>
               </li>
             ))}
           </ul>
