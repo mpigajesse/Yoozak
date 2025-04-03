@@ -61,4 +61,10 @@ yarn-error.log
 *~
 
 # Fichiers de cache
-.cache/ 
+.cache/
+
+# Next.js
+.next/
+**/.next/
+**/*.pack.gz
+**/*.pack 
