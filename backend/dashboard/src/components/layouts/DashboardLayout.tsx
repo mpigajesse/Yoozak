@@ -7,6 +7,9 @@ import { cn } from "@/lib/utils";
 import Header from './Header';
 import Sidebar from './Sidebar';
 import { Drawer } from "@/components/ui/drawer";
+import { ToastContainer } from 'react-toastify';
+import { useTheme } from "next-themes";
+import ThemeToggle from "../ui/ThemeToggle";
 
 interface DashboardLayoutProps {
   children: ReactNode;
@@ -24,6 +27,7 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) =>
   const pathname = usePathname();
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const getUserInfo = useAuthStore((state) => state.getUserInfo);
+  const { theme, setTheme } = useTheme();
 
   // Gérer la détection de la taille de l'écran
   useEffect(() => {
@@ -87,6 +91,13 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) =>
     getUserInfo();
   }, [isAuthenticated, getUserInfo, router]);
 
+  // Journaliser le thème pour le débogage
+  useEffect(() => {
+    if (mounted) {
+      console.log("Thème actuel du dashboard:", theme);
+    }
+  }, [theme, mounted]);
+
   // Fonction pour gérer le toggle du menu (version unifiée)
   const handleMenuToggle = () => {
     console.log("Menu toggle clicked - avant:", isMobile, isTablet, isMobileMenuOpen);
@@ -101,6 +112,18 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) =>
   };
 
   if (!mounted || !isAuthenticated) return null;
+
+  // Le composant Diagnostic pour afficher l'état du thème
+  const ThemeDiagnostic = () => {
+    return (
+      <div className="fixed bottom-4 right-4 z-50 flex items-center space-x-2 rounded-md bg-gray-100 p-2 shadow-md dark:bg-gray-800">
+        <span className="text-xs text-gray-700 dark:text-gray-300">
+          Thème: <span className="font-bold">{theme}</span>
+        </span>
+        <ThemeToggle size="sm" />
+      </div>
+    );
+  };
 
   return (
     <div className="flex h-screen w-full bg-gray-50 dark:bg-gray-900 overflow-hidden overscroll-none">
@@ -179,6 +202,25 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) =>
           </div>
         </main>
       </div>
+
+      {/* Overlay pour le menu mobile */}
+      {isMobileMenuOpen && isMobile && (
+        <div 
+          className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm"
+          onClick={handleMenuToggle}
+          aria-hidden="true"
+        ></div>
+      )}
+      
+      {/* Diagnostic du thème */}
+      <ThemeDiagnostic />
+
+      <ToastContainer 
+        position="bottom-right"
+        theme={theme === 'dark' ? 'dark' : 'light'}
+        closeOnClick
+        pauseOnHover
+      />
     </div>
   );
 }; 

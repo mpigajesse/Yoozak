@@ -10,7 +10,7 @@ import { Bars3Icon as Menu, XMarkIcon as X, ChevronLeftIcon, ChevronRightIcon, M
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { User, Settings, LogOut } from "lucide-react";
+import { User, Settings, LogOut, Sun, Moon } from "lucide-react";
 import Link from "next/link";
 
 interface HeaderProps {
@@ -140,6 +140,28 @@ export default function Header({
 
         {/* Actions section - optimisé avec espacements pour éviter les erreurs de tap */}
         <div className="flex items-center space-x-1 sm:space-x-2 md:space-x-3">
+          {/* Bouton de thème */}
+          <button 
+            onClick={toggleTheme}
+            className={cn(
+              "relative rounded-full p-2 sm:p-2.5",
+              "text-gray-600 hover:bg-gray-100 hover:text-gray-900", 
+              "dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-100",
+              "transition-all duration-200 ease-in-out",
+              "outline-none focus:ring-2 focus:ring-primary-500",
+              "touch-optimized tap-feedback mobile-interactive theme-toggle-btn", // Optimisations tactiles + theme button
+              // Taille plus grande sur mobile
+              isMobile ? "h-12 w-12" : "h-10 w-10"
+            )}
+            aria-label={theme === 'dark' ? "Passer au mode clair" : "Passer au mode sombre"}
+          >
+            {theme === 'dark' ? (
+              <Sun className={cn("h-5 w-5 theme-icon theme-icon-sun", isMobile && "h-6 w-6")} />
+            ) : (
+              <Moon className={cn("h-5 w-5 theme-icon theme-icon-moon", isMobile && "h-6 w-6")} />
+            )}
+          </button>
+
           {/* Notifications button */}
           <button 
             className={cn(

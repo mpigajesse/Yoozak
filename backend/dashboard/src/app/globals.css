@@ -398,20 +398,60 @@
   animation: slideIn 0.3s ease-in-out;
 }
 
-/* Animation pour le changement de thème */
+/* Amélioration de la transition entre les thèmes */
 .theme-transition {
-  animation: themeChange 0.5s ease;
+  @apply transition-colors duration-500 ease-in-out;
+  animation: themeChange 1s ease;
+}
+
+/* Style pour l'icône de thème */
+.theme-icon {
+  @apply relative transition-transform duration-300 hover:rotate-45;
+}
+
+.theme-icon-sun {
+  @apply text-amber-500 hover:text-amber-600 dark:text-amber-400 dark:hover:text-amber-300;
+}
+
+.theme-icon-moon {
+  @apply text-indigo-500 hover:text-indigo-600 dark:text-indigo-400 dark:hover:text-indigo-300;
+}
+
+@keyframes themeChange {
+  0% {
+    opacity: 0.85;
+    transform: scale(0.99);
+  }
+  50% {
+    opacity: 0.9;
+    transform: scale(1.005);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* S'assurer que tous les éléments ont une transition fluide */
+*, ::before, ::after {
+  transition-property: background-color, border-color, color, fill, stroke;
+  transition-duration: 0.3s;
+  transition-timing-function: ease;
+}
+
+/* Désactiver la transition pour les éléments spécifiques où cela pourrait être gênant */
+.notransition {
+  transition: none !important;
+}
+
+/* Appliquer une transition plus rapide aux boutons de thème */
+.theme-toggle-btn {
+  @apply transition-transform duration-150 ease-in-out;
 }
 
 /* Animation pour le message d'information */
 .animate-pulse-subtle {
   animation: pulseSubtle 3s ease-in-out infinite;
-}
-
-@keyframes themeChange {
-  0% { opacity: 0.8; }
-  50% { opacity: 0.9; }
-  100% { opacity: 1; }
 }
 
 @keyframes pulseSubtle {
