@@ -1,8 +1,8 @@
- "use client";
+"use client";
 
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { getUserInfo, loginUser, logoutUser, updateUserProfile, refreshToken, verifyToken } from "@/services/api";
+import { getUserInfo, loginUser, logoutUser, updateUserProfile, refreshToken, verifyToken } from "@/services/auth";
 import { USER_KEY, TOKEN_KEY } from "@/config/constants";
 import { User } from "@/types";
 

@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'drf_yasg', # pour la documentation de l'api avec swagger , il permet de gerer les routes et les schemas
     'django_extensions', # pour les extensions django 
     # Applications personnalisées
+    'users', # Application de gestion des utilisateurs et de l'organisation
     'products',
     'clients',
     'commandes',
