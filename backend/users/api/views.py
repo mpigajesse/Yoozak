@@ -8,6 +8,7 @@ from django.contrib.auth.models import User
 from django.utils.translation import gettext_lazy as _
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework_simplejwt.tokens import RefreshToken
+from django.db import models
 
 from ..models import Pole, Service, Team, UserProfile, UserRole
 from .serializers import (
