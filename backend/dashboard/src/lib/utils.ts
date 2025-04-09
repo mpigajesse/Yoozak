@@ -1,3 +1,15 @@
+
+// le dossier lib gere les librairies
+// les librairies sont des fonctions qui permettent de gerer les données dans les components
+
+// ce fichier gere les utils
+// les utils sont des fonctions qui permettent de gerer les données dans les components
+//exemple : les fonctions pour formater les dates, les prix, les textes, etc.
+//exemple 2: les fonctions pour gerer les classes css, les couleurs, les polices de caractères, etc.
+// car on a besoin de gerer les utils dans les components
+// on gere les utils avec les utils
+
+// importation des utils
 import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 

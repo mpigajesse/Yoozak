@@ -1,7 +1,21 @@
+// le dossier components gere les composants
+
+//il contient le dossier ui 
+// le dossier ui gere les composants ui
+// les composants ui sont des objets qui permettent de gerer les données dans les components
+// car on a besoin de gerer les données dans les components
+
+// ce fichier gere le composant DashboardCard
+// le composant DashboardCard est un composant qui permet de gerer les données dans les components
+
+
 "use client";
 
-import React, { ReactNode } from 'react';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import React from 'react';
+// importation de Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle ce sont des composants ui 
+//permettant de gerer les données dans les components exemple : les cartes de dashboard comme les cartes de statistiques
+
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/Card';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
 

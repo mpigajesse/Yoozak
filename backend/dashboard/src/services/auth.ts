@@ -10,10 +10,9 @@ interface AuthResponse {
   user_roles?: string[];
 }
 
-// Fonction pour obtenir les informations de l'utilisateur courant
+// Récupération des informations de l'utilisateur courant
 export const getUserInfo = async () => {
   try {
-    // Utiliser l'API pour récupérer les informations de l'utilisateur
     console.log("Récupération des informations de l'utilisateur courant");
     const response = await apiService.auth.getCurrentUser();
     console.log("Informations utilisateur reçues:", response);
@@ -24,7 +23,7 @@ export const getUserInfo = async () => {
   }
 };
 
-// Fonction pour connecter un utilisateur
+// Fonction d'authentification d'un utilisateur
 export const loginUser = async (username: string, password: string): Promise<AuthResponse> => {
   try {
     // Route standard pour Simple JWT dans Django
@@ -38,7 +37,7 @@ export const loginUser = async (username: string, password: string): Promise<Aut
   }
 };
 
-// Fonction pour déconnecter un utilisateur
+// Déconnexion de l'utilisateur
 export const logoutUser = () => {
   try {
     localStorage.removeItem('token');
@@ -50,10 +49,9 @@ export const logoutUser = () => {
   }
 };
 
-// Fonction pour mettre à jour le profil de l'utilisateur
+// Mise à jour du profil utilisateur
 export const updateUserProfile = async (userData: any) => {
   try {
-    // Utiliser le service API pour mettre à jour le profil
     const response = await apiService.auth.updateProfile(userData);
     return response;
   } catch (error) {
@@ -62,10 +60,9 @@ export const updateUserProfile = async (userData: any) => {
   }
 };
 
-// Fonction pour rafraîchir le token
+// Rafraîchissement du token JWT
 export const refreshToken = async (token: string): Promise<AuthResponse> => {
   try {
-    // Route standard pour le rafraîchissement du token Simple JWT
     const response = await apiService.post('/token/refresh/', { refresh: token });
     return response.data;
   } catch (error) {
@@ -74,10 +71,9 @@ export const refreshToken = async (token: string): Promise<AuthResponse> => {
   }
 };
 
-// Fonction pour vérifier la validité du token
+// Vérification de la validité du token
 export const verifyToken = async (token: string) => {
   try {
-    // Route standard pour la vérification du token Simple JWT
     const response = await apiService.post('/token/verify/', { token });
     return response;
   } catch (error) {

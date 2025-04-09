@@ -1,9 +1,15 @@
+// ce fichier gere le composant avatar
+// le composant avatar est un composant qui permet de gerer les données dans les components
+// car on a besoin de gerer les données dans les components
+
 "use client"
 
 import * as React from "react"
 import * as AvatarPrimitive from "@radix-ui/react-avatar"
-
+// importation de React, AvatarPrimitive ce sont des objets provenant de @radix-ui/react-avatar 
+// exemple : les avatars dans les pages de gestion des utilisateurs, des produits, des articles, etc.
 import { cn } from "@/lib/utils"
+// importation de cn ce sont des objets provenant de @/lib/utils
 
 const Avatar = React.forwardRef<
   React.ElementRef<typeof AvatarPrimitive.Root>,

@@ -1,10 +1,15 @@
+// ce fichier gere le composant checkbox
+// le composant checkbox est un composant qui permet de gerer les données dans les components
+// car on a besoin de gerer les données dans les components
+// exemple : les checkbox dans les pages de gestion des utilisateurs, des produits, des articles, etc.
+
 "use client"
 
 import * as React from "react"
 import * as CheckboxPrimitive from "@radix-ui/react-checkbox"
 import { Check } from "lucide-react"
 
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils" // importation de cn ce sont des objets provenant de @/lib/utils ,exemple : les classes css
 
 const Checkbox = React.forwardRef<
   React.ElementRef<typeof CheckboxPrimitive.Root>,

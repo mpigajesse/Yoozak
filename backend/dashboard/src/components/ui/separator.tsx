@@ -1,3 +1,15 @@
+// ce fichier gere le composant separator
+// le composant separator est un composant qui permet de gerer les données dans les components
+// car on a besoin de gerer les données dans les components
+
+// on utilise use client pour gerer le composant separator
+// on utilise React pour gerer le composant separator
+// on utilise SeparatorPrimitive pour gerer le composant separator
+// on utilise cn pour gerer les classes css
+
+// lobjectifs du seperator est de creer un separateur entre les composants 
+// on utilise orientation pour gerer l'orientation du separateur
+
 "use client"
 
 import * as React from "react"

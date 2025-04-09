@@ -1,4 +1,13 @@
+// ce fichier gere le tableau de données
+// le tableau de données est un tableau qui permet de gerer les données dans les components
+// exemple : les tableaux de données dans les pages de gestion des utilisateurs, des produits, des articles, etc.
+
+
 import React, { useState } from 'react';
+// importation de React, useState ce sont des objets qui permettent de gerer les données dans les components
+// car on a besoin de gerer les données dans les components
+// exemple : les tableaux de données dans les pages de gestion des utilisateurs, des produits, des articles, etc.
+
 import {
   ColumnDef,
   flexRender,
@@ -10,9 +19,10 @@ import {
   getFilteredRowModel,
   ColumnFiltersState,
   VisibilityState,
-} from '@tanstack/react-table';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
+} 
+from '@tanstack/react-table';
+import { Input } from '@/components/ui/input'; // importation de Input ce sont des objets provenant de components ui de react
+import { Button } from '@/components/ui/button'; // importation de Button ce sont des objets provenant de components ui de react
 import { Search, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from 'lucide-react';
 import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { cn } from '@/lib/utils';
@@ -43,6 +53,11 @@ export function DataTable<TData, TValue>({
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState({});
 
+
+  // creation du tableau de données
+  // on utilise useReactTable pour creer le tableau de données
+  // on utilise les objets provenant de @tanstack/react-table pour creer le tableau de données
+
   const table = useReactTable({
     data,
     columns,
@@ -62,12 +77,21 @@ export function DataTable<TData, TValue>({
     },
   });
 
+  // creation de la fonction pour gerer le clic sur une ligne du tableau de données
+  // on utilise onRowClick pour gerer le clic sur une ligne du tableau de données
+  // on utilise row.original pour acceder aux données de la ligne 
   const handleRowClick = (row: any) => {
     if (onRowClick) {
       onRowClick(row.original);
     }
   };
 
+  // creation du composant DataTable
+  // on utilise cn pour gerer les classes css
+  // on utilise className pour gerer les classes css
+  // on utilise searchColumn pour gerer la recherche dans le tableau de données
+  // on utilise searchPlaceholder pour gerer le placeholder de la recherche dans le tableau de données
+  // on utilise withColumnVisibility pour gerer la visibilité des colonnes dans le tableau de données
   return (
     <div className={cn("space-y-4", className)}>
       <div className="flex items-center justify-between">

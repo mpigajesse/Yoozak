@@ -1,3 +1,9 @@
+
+// le dossier types gere les types
+// les types sont des objets qui permettent de gerer les données dans les components
+// car on a besoin de gerer les types dans les components
+//exemple : les types de la réponse de l'api, les types de l'utilisateur, les types de l'organisation, etc.
+
 // Interface utilisateur
 export interface User {
   id: number;
@@ -28,6 +34,7 @@ export interface Category {
   description: string | null;
 }
 
+// Types pour les sous-catégories
 export interface SubCategory {
   id: number;
   nom: string;
@@ -35,6 +42,7 @@ export interface SubCategory {
   categorie: number;
 }
 
+// Types pour les produits
 export interface Product {
   id: number;
   name: string;
@@ -47,6 +55,7 @@ export interface Product {
   updatedAt: string;
 }
 
+// Types pour les articles
 export interface Article {
   id: number;
   produit: number;
@@ -56,6 +65,7 @@ export interface Article {
   date_achat: string | null;
 }
 
+// Types pour les créatifs
 export interface Creative {
   id: number;
   produit: number;
@@ -63,6 +73,7 @@ export interface Creative {
   url: string;
 }
 
+// Types pour les promotions
 export interface Promotion {
   id: number;
   produit: number;
@@ -82,6 +93,7 @@ export interface Client {
   createdAt: string;
 }
 
+// Types pour les favoris
 export interface Favoris {
   id: number;
   client: number;
@@ -89,6 +101,7 @@ export interface Favoris {
   date_ajout: string;
 }
 
+// Types pour les avis
 export interface Avis {
   id: number;
   client: number;
@@ -113,6 +126,7 @@ export interface Order {
   createdAt: string;
 }
 
+// Types pour le panier
 export interface Panier {
   id: number;
   client: number;
@@ -121,6 +135,7 @@ export interface Panier {
   date_ajout: string;
 }
 
+// Types pour les lignes de commande
 export interface LigneCommande {
   id: number;
   commande: number;
@@ -130,6 +145,7 @@ export interface LigneCommande {
   prix_unitaire: number;
 }
 
+// Types pour les codes promo
 export interface CodePromo {
   id: number;
   numero_promo: string;
@@ -140,6 +156,7 @@ export interface CodePromo {
   est_actif: boolean;
 }
 
+// Types pour les remises
 export interface Remise {
   id: number;
   commande: number;
@@ -147,6 +164,7 @@ export interface Remise {
   date_creation: string;
 }
 
+// Types pour les retours   
 export interface Retour {
   id: number;
   commande: number;

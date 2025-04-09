@@ -1,8 +1,15 @@
+// ce fichier gere le composant switch
+// le composant switch est un composant qui permet de gerer les données dans les components
+// car on a besoin de gerer les données dans les components
+
 "use client"
 
 import * as React from "react"
 import * as SwitchPrimitives from "@radix-ui/react-switch"
 import { cn } from "@/lib/utils"
+
+// creation du composant switch
+// on utilise SwitchPrimitives.Root pour creer le composant switch
 
 const Switch = React.forwardRef<
   React.ElementRef<typeof SwitchPrimitives.Root>,
@@ -24,5 +31,8 @@ const Switch = React.forwardRef<
   </SwitchPrimitives.Root>
 ))
 Switch.displayName = SwitchPrimitives.Root.displayName
+
+// exportation du composant switch
+// on utilise export pour exporter le composant switch
 
 export { Switch } 

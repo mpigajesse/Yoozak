@@ -1,3 +1,15 @@
+
+// le dossier store gere le store
+// le store est un objet qui permet de gerer les données dans les components 
+// car on a besoin de gerer les données dans les components 
+
+// ce fichier gere la connexion, la déconnexion, 
+// la mise à jour des informations utilisateur et la vérification de l'authentification
+//Dans ce fichier, on gère le state du store pour l'authentification et la gestion des erreurs.
+//On gère également les types de la réponse de l'API et les types de l'utilisateur.
+
+// 'utilisation de 'use client' pour que le store soit accessible dans les components
+//car le store est un composant client 
 "use client";
 
 import { create } from "zustand";
@@ -5,7 +17,9 @@ import { persist } from "zustand/middleware";
 import { getUserInfo, loginUser, logoutUser, updateUserProfile, refreshToken, verifyToken } from "@/services/api";
 import { User } from "@/types";
 
-// Types pour l'authentification
+// Types pour l'authentification et la gestion des erreurs
+// ici on gere les types de la reponse de l'api
+//car on a besoin de les utiliser dans le store et dans les components pour la gestion des erreurs
 interface AuthResponse {
   access: string;
   refresh: string;
@@ -13,6 +27,9 @@ interface AuthResponse {
   user_roles?: string[];
 }
 
+// interface pour le state du store 
+// on gere les types de l'authentification et la gestion des erreurs
+// on gere les types de l'utilisateur et les erreurs 
 interface AuthState {
   isAuthenticated: boolean;
   token: string | null;
@@ -30,6 +47,7 @@ interface AuthState {
 }
 
 // Convertit les données utilisateur renvoyées par l'API Django au format User
+// car on a besoin de les utiliser dans le store et dans les components pour la gestion des erreurs
 const transformUserData = (apiData: any): User => {
   if (!apiData) return {} as User;
   
@@ -68,7 +86,9 @@ const transformUserData = (apiData: any): User => {
   };
 };
 
-// Créer et exporter le store
+// Créer et exporter le store 
+// ici on gere le state du store 
+//car le state
 export const useAuthStore = create<AuthState>()(
   persist(
     (set, get) => ({

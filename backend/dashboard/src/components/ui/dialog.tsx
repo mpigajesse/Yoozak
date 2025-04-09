@@ -1,3 +1,8 @@
+// ce fichier gere le composant dialog
+// le composant dialog est un composant qui permet de gerer les données dans les components
+// exemple : les dialogues dans les pages de gestion des utilisateurs, des produits, des articles, etc.
+// exemple 2: dans les pages de gestion des utilisateurs, on peut creer un dialogue pour creer un utilisateur, modifier un utilisateur, supprimer un utilisateur, etc.
+
 "use client"
 
 import * as React from "react"
@@ -6,14 +11,19 @@ import { X } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 
-const Dialog = DialogPrimitive.Root
+// creation du composant dialog
+const Dialog = DialogPrimitive.Root 
 
+// creation du composant dialogTrigger
 const DialogTrigger = DialogPrimitive.Trigger
 
+// creation du composant dialogPortal
 const DialogPortal = DialogPrimitive.Portal
 
+// creation du composant dialogClose
 const DialogClose = DialogPrimitive.Close
 
+// creation du composant dialogOverlay
 const DialogOverlay = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Overlay>,
   React.ComponentPropsWithoutRef<typeof DialogPrimitive.Overlay>
@@ -29,6 +39,7 @@ const DialogOverlay = React.forwardRef<
 ))
 DialogOverlay.displayName = DialogPrimitive.Overlay.displayName
 
+// creation du composant dialogContent
 const DialogContent = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Content>,
   React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content>
@@ -53,6 +64,7 @@ const DialogContent = React.forwardRef<
 ))
 DialogContent.displayName = DialogPrimitive.Content.displayName
 
+// creation du composant dialogHeader
 const DialogHeader = ({
   className,
   ...props
@@ -67,6 +79,7 @@ const DialogHeader = ({
 )
 DialogHeader.displayName = "DialogHeader"
 
+// creation du composant dialogFooter
 const DialogFooter = ({
   className,
   ...props
@@ -81,6 +94,7 @@ const DialogFooter = ({
 )
 DialogFooter.displayName = "DialogFooter"
 
+// creation du composant dialogTitle
 const DialogTitle = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Title>,
   React.ComponentPropsWithoutRef<typeof DialogPrimitive.Title>
@@ -96,6 +110,7 @@ const DialogTitle = React.forwardRef<
 ))
 DialogTitle.displayName = DialogPrimitive.Title.displayName
 
+// creation du composant dialogDescription
 const DialogDescription = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Description>,
   React.ComponentPropsWithoutRef<typeof DialogPrimitive.Description>
@@ -108,6 +123,8 @@ const DialogDescription = React.forwardRef<
 ))
 DialogDescription.displayName = DialogPrimitive.Description.displayName
 
+// exportation des composants dialog, dialogPortal, dialogOverlay, dialogClose, dialogTrigger, dialogContent, dialogHeader, dialogFooter, dialogTitle, dialogDescription
+// on utilise export pour exporter les composants
 export {
   Dialog,
   DialogPortal,

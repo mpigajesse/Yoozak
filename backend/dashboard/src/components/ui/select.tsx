@@ -1,3 +1,7 @@
+// ce fichier gere le composant select
+// le composant select est un composant qui permet de gerer les données dans les components
+// car on a besoin de gerer les données dans les components
+
 "use client"
 
 import * as React from "react"
@@ -6,12 +10,25 @@ import { Check, ChevronDown, ChevronUp } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 
+// creation du composant select
+// on utilise SelectPrimitive.Root pour creer le composant select
+
+
+
+// creation du composant select
+// on utilise SelectPrimitive.Root pour creer le composant select
 const Select = SelectPrimitive.Root
 
+// creation du composant selectGroup  
+// on utilise SelectPrimitive.Group pour creer le composant selectGroup
 const SelectGroup = SelectPrimitive.Group
 
+// creation du composant selectValue
+// on utilise SelectPrimitive.Value pour creer le composant selectValue
 const SelectValue = SelectPrimitive.Value
 
+// creation du composant selectTrigger
+// on utilise SelectPrimitive.Trigger pour creer le composant selectTrigger
 const SelectTrigger = React.forwardRef<
   React.ElementRef<typeof SelectPrimitive.Trigger>,
   React.ComponentPropsWithoutRef<typeof SelectPrimitive.Trigger>
@@ -32,6 +49,8 @@ const SelectTrigger = React.forwardRef<
 ))
 SelectTrigger.displayName = SelectPrimitive.Trigger.displayName
 
+// creation du composant selectScrollUpButton
+// on utilise SelectPrimitive.ScrollUpButton pour creer le composant selectScrollUpButton
 const SelectScrollUpButton = React.forwardRef<
   React.ElementRef<typeof SelectPrimitive.ScrollUpButton>,
   React.ComponentPropsWithoutRef<typeof SelectPrimitive.ScrollUpButton>
@@ -67,6 +86,8 @@ const SelectScrollDownButton = React.forwardRef<
 SelectScrollDownButton.displayName =
   SelectPrimitive.ScrollDownButton.displayName
 
+// creation du composant selectContent
+// on utilise SelectPrimitive.Content pour creer le composant selectContent
 const SelectContent = React.forwardRef<
   React.ElementRef<typeof SelectPrimitive.Content>,
   React.ComponentPropsWithoutRef<typeof SelectPrimitive.Content>
@@ -99,6 +120,8 @@ const SelectContent = React.forwardRef<
 ))
 SelectContent.displayName = SelectPrimitive.Content.displayName
 
+// creation du composant selectLabel
+// on utilise SelectPrimitive.Label pour creer le composant selectLabel
 const SelectLabel = React.forwardRef<
   React.ElementRef<typeof SelectPrimitive.Label>,
   React.ComponentPropsWithoutRef<typeof SelectPrimitive.Label>
@@ -111,6 +134,8 @@ const SelectLabel = React.forwardRef<
 ))
 SelectLabel.displayName = SelectPrimitive.Label.displayName
 
+// creation du composant selectItem
+// on utilise SelectPrimitive.Item pour creer le composant selectItem
 const SelectItem = React.forwardRef<
   React.ElementRef<typeof SelectPrimitive.Item>,
   React.ComponentPropsWithoutRef<typeof SelectPrimitive.Item>
@@ -134,6 +159,8 @@ const SelectItem = React.forwardRef<
 ))
 SelectItem.displayName = SelectPrimitive.Item.displayName
 
+// creation du composant selectSeparator
+// on utilise SelectPrimitive.Separator pour creer le composant selectSeparator
 const SelectSeparator = React.forwardRef<
   React.ElementRef<typeof SelectPrimitive.Separator>,
   React.ComponentPropsWithoutRef<typeof SelectPrimitive.Separator>
@@ -145,6 +172,9 @@ const SelectSeparator = React.forwardRef<
   />
 ))
 SelectSeparator.displayName = SelectPrimitive.Separator.displayName
+
+// exportation des composants select, selectGroup, selectValue, selectTrigger, selectContent, selectLabel, selectItem, selectSeparator, selectScrollUpButton, selectScrollDownButton
+// on utilise export pour exporter les composants
 
 export {
   Select,

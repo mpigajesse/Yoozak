@@ -1,5 +1,14 @@
+// ce fichier gere le composant input
+// le composant input est un composant qui permet de gerer les données dans les components
+// car on a besoin de gerer les données dans les components
+
 import * as React from "react"
 import { cn } from "@/lib/utils"
+
+// creation de l'interface InputProps
+// on utilise extends pour hériter de la classe InputHTMLAttributes
+// on utilise React.InputHTMLAttributes pour hériter de la classe InputHTMLAttributes
+// on utilise HTMLInputElement pour hériter de la classe HTMLInputElement
 
 export interface InputProps
   extends React.InputHTMLAttributes<HTMLInputElement> {

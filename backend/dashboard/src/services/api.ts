@@ -1,11 +1,31 @@
+
+// le dossier services gere les services
+// les services sont des objets qui permettent de gerer les données dans les components
+
+
+// ce fichier gere les appels à l'api
+// il gere les erreurs, les intercepteurs, les services, les fonctions d'authentification
+// et les types de la réponse de l'api
+// il gere les types de la réponse de l'api
+// il gere les types de l'utilisateur
+// il gere les types de l'organisation
+// il gere les types de l'authentification
+// il gere les types de la réponse de l'api
+// il gere les types de l'utilisateur
+// il gere les types de l'organisation
+
+// 'utilisation de 'use client' pour que le store soit accessible dans les components
+//car le store est un composant client 
 "use client";
 
+// importation de axios pour faire les appels à l'api 
+//car on a besoin de faire les appels à l'api dans les components
 import axios from "axios";
 
 // Configuration de l'URL de base pour les appels API
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
 
-// Création d'une instance axios avec configuration par défaut
+// Création d'une instance axios avec configuration par défaut ,pour faire les appels à l'api
 const apiClient = axios.create({
   baseURL: API_BASE_URL,
   headers: {
@@ -14,6 +34,9 @@ const apiClient = axios.create({
 });
 
 // Intercepteur pour ajouter le token à chaque requête
+// car on a besoin de l'ajouter à chaque requête pour l'authentification
+// afin de pouvoir accéder aux ressources protégées ,telles que les utilisateurs, les organisations, les services, les équipes, les rôles, etc.
+// on ajoute le token à chaque requête pour l'authentification
 apiClient.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('token');
@@ -57,6 +80,8 @@ apiClient.interceptors.response.use(
 );
 
 // Service API pour la gestion des utilisateurs
+// car on a besoin de gerer les utilisateurs
+// on gere les utilisateurs avec les filtres optionnels 
 const userService = {
   // Récupérer tous les utilisateurs avec filtres optionnels
   getUsers: (params = {}) => {
@@ -90,6 +115,10 @@ const userService = {
 };
 
 // Export d'un service API général
+// car on a besoin de gerer les organisations, les services, les équipes, les rôles, etc.
+// on gere les organisations, les services, les équipes, les rôles, etc.
+
+// apiService est un objet qui contient les services API pour la gestion des utilisateurs, des organisations, des services, des équipes, des rôles, etc.
 const apiService = {
   users: userService,
   
@@ -102,7 +131,7 @@ const apiService = {
     updatePole: (id: number | string, poleData: any) => apiClient.patch(`/poles/${id}/`, poleData),
     deletePole: (id: number | string) => apiClient.delete(`/poles/${id}/`),
     
-    // Services
+    // Services 
     getServices: (params = {}) => apiClient.get('/services/', { params }),
     getServiceById: (id: number | string) => apiClient.get(`/services/${id}/`),
     getServicesByPole: (poleId: number | string) => apiClient.get('/services/', { params: { pole: poleId } }),
@@ -151,6 +180,8 @@ const apiService = {
 };
 
 // Fonctions d'authentification pour compatibilité avec le store d'auth existant
+// car on a besoin de gerer les fonctions d'authentification
+// on gere les fonctions d'authentification avec les fonctions d'authentification
 export const getUserInfo = () => apiService.auth.getCurrentUser();
 export const loginUser = (username: string, password: string) => apiService.auth.login({ username, password });
 export const logoutUser = () => apiService.auth.logout();

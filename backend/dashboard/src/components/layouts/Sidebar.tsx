@@ -21,7 +21,6 @@ import {
 } from '@heroicons/react/24/outline';
 import { Button } from "@/components/ui/button";
 import { ChevronDown } from 'lucide-react';
-import { useMediaQuery } from '@/hooks/useMediaQuery';
 
 interface SubItem {
   label: string;
@@ -68,8 +67,6 @@ export default function Sidebar({
   const [isMobile, setIsMobile] = useState(false);
   const pathname = usePathname();
   const logout = useAuthStore((state) => state.logout);
-  const isTabletMedia = useMediaQuery('(max-width: 1024px)');
-  const isMobileMedia = useMediaQuery('(max-width: 768px)');
 
   // Fermeture du menu mobile lors d'un clic sur un élément
   const handleMobileClose = () => {

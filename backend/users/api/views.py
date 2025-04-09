@@ -10,7 +10,10 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.db import models
 
+# on importe les modèles
 from ..models import Pole, Service, Team, UserProfile, UserRole
+
+# on importe les serializers
 from .serializers import (
     AdminUserSerializer,
     UserDetailSerializer, 
@@ -22,9 +25,11 @@ from .serializers import (
     TokenSerializer
 )
 
+# on importe le modèle User
 User = get_user_model()
 
 # Vue API simple
+# on crée une vue pour récupérer les informations de l'utilisateur actuellement connecté
 @api_view(['GET'])
 @permission_classes([permissions.IsAuthenticated])
 def current_user(request):
@@ -55,17 +60,20 @@ def current_user(request):
             status=status.HTTP_500_INTERNAL_SERVER_ERROR
         )
 
+# Vue API pour les administrateurs
 class AdminUserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = AdminUserSerializer
     permission_classes = [permissions.IsAuthenticated]
 
+    # on filtre pour ne retourner que les utilisateurs staff/admin
     def get_queryset(self):
         """
         Filtre pour ne retourner que les utilisateurs staff/admin
         """
         return User.objects.filter(is_staff=True)
 
+    # on crée une vue pour récupérer les informations de l'utilisateur connecté
     @action(detail=False, methods=['get'])
     def me(self, request):
         """
@@ -90,6 +98,7 @@ class AdminUserViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(request.user)
         return Response(serializer.data)
 
+# Vue pour récupérer et mettre à jour le profil de l'utilisateur admin connecté
 class AdminProfileView(APIView):
     """
     Vue pour récupérer et mettre à jour le profil de l'utilisateur admin connecté
@@ -109,19 +118,21 @@ class AdminProfileView(APIView):
         serializer = AdminUserSerializer(request.user)
         return Response(serializer.data)
 
+# Vue pour récupérer, mettre à jour ou supprimer un utilisateur spécifique par son ID
 @api_view(['GET', 'PATCH', 'DELETE'])
 @permission_classes([permissions.IsAuthenticated])
 def user_detail(request, user_id):
     """
     Endpoint pour récupérer, mettre à jour ou supprimer un utilisateur spécifique par son ID
     """
-    # Vérifier que l'utilisateur est un administrateur
+    # on vérifie que l'utilisateur est un administrateur
     if not request.user.is_staff:
         return Response(
             {"detail": "Seuls les administrateurs peuvent accéder à cet endpoint"},
             status=status.HTTP_403_FORBIDDEN
         )
     
+    # on récupère l'utilisateur
     try:
         user = User.objects.get(id=user_id)
     except User.DoesNotExist:
@@ -203,10 +214,12 @@ def user_detail(request, user_id):
             status=status.HTTP_204_NO_CONTENT
         )
 
+# Vue pour l'authentification
 class LoginViewSet(viewsets.ViewSet):
     """Viewset pour l'authentification"""
     permission_classes = [permissions.AllowAny]
     
+    # on crée une vue pour l'authentification
     @action(methods=['post'], detail=False)
     def login(self, request):
         serializer = LoginSerializer(data=request.data)
@@ -218,7 +231,7 @@ class LoginViewSet(viewsets.ViewSet):
             
             if user:
                 refresh = RefreshToken.for_user(user)
-                # Récupérer tous les rôles de l'utilisateur
+                # on récupère tous les rôles de l'utilisateur
                 roles = [role.role for role in user.roles.filter(est_actif=True)]
                 
                 data = {
@@ -237,17 +250,24 @@ class LoginViewSet(viewsets.ViewSet):
             
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+# Vue pour les utilisateurs
 class UserViewSet(viewsets.ModelViewSet):
     """Viewset pour User"""
     queryset = User.objects.all().select_related('profile').prefetch_related(
         'roles', 'roles__pole', 'roles__service', 'roles__team',
         'services', 'teams'
     )
+    # on crée un serializer pour le modèle User
     serializer_class = UserDetailSerializer
+    # on crée une permission pour les utilisateurs
     permission_classes = [permissions.IsAuthenticated]
+    # on crée un filtre pour les utilisateurs
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    # on crée un filtre pour les utilisateurs
     filterset_fields = ['is_active', 'is_staff']
+    # on crée un filtre pour les utilisateurs
     search_fields = ['username', 'email', 'first_name', 'last_name', 'profile__poste']
+    # on crée un filtre pour les utilisateurs
     ordering_fields = ['username', 'date_joined', 'last_name']
     
     def get_queryset(self):
@@ -294,12 +314,14 @@ class UserViewSet(viewsets.ModelViewSet):
         
         return queryset.distinct()
     
+    # on crée une vue pour récupérer les informations de l'utilisateur connecté
     @action(detail=False, methods=['get'])
     def me(self, request):
         """Récupérer les informations de l'utilisateur connecté"""
         serializer = self.get_serializer(request.user)
         return Response(serializer.data)
     
+    # on crée une vue pour récupérer les rôles d'un utilisateur
     @action(detail=True, methods=['get'])
     def roles(self, request, pk=None):
         """Récupérer les rôles d'un utilisateur"""
@@ -308,6 +330,7 @@ class UserViewSet(viewsets.ModelViewSet):
         serializer = UserRoleSerializer(roles, many=True)
         return Response(serializer.data)
     
+    # on crée une vue pour ajouter un rôle à un utilisateur
     @action(detail=True, methods=['post'])
     def add_role(self, request, pk=None):
         """Ajouter un rôle à un utilisateur"""
@@ -320,6 +343,7 @@ class UserViewSet(viewsets.ModelViewSet):
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+# Vue pour les pôles 
 class PoleViewSet(viewsets.ModelViewSet):
     """Viewset pour Pole"""
     queryset = Pole.objects.all()
@@ -330,10 +354,12 @@ class PoleViewSet(viewsets.ModelViewSet):
     search_fields = ['nom', 'description']
     ordering_fields = ['nom', 'date_creation']
     
+    # on crée une vue pour récupérer les services d'un pôle
     def get_queryset(self):
         """Optimisation des requêtes avec prefetch_related"""
         return Pole.objects.all().prefetch_related('services', 'roles')
     
+    # on crée une vue pour récupérer les services d'un pôle
     @action(detail=True, methods=['get'])
     def services(self, request, pk=None):
         """Récupérer les services d'un pôle"""
@@ -342,6 +368,7 @@ class PoleViewSet(viewsets.ModelViewSet):
         serializer = ServiceSerializer(services, many=True)
         return Response(serializer.data)
     
+    # on crée une vue pour récupérer les utilisateurs d'un pôle
     @action(detail=True, methods=['get'])
     def users(self, request, pk=None):
         """Récupérer les utilisateurs d'un pôle"""
@@ -351,6 +378,7 @@ class PoleViewSet(viewsets.ModelViewSet):
         serializer = UserDetailSerializer(pole_users, many=True)
         return Response(serializer.data)
 
+# Vue pour les services
 class ServiceViewSet(viewsets.ModelViewSet):
     """Viewset pour Service"""
     queryset = Service.objects.all().select_related('pole', 'responsable').prefetch_related('teams')
@@ -361,6 +389,7 @@ class ServiceViewSet(viewsets.ModelViewSet):
     search_fields = ['nom', 'description']
     ordering_fields = ['nom', 'date_creation']
     
+    # on crée une vue pour récupérer les services
     def get_queryset(self):
         """Optimise les requêtes pour les services"""
         queryset = super().get_queryset()
@@ -383,7 +412,7 @@ class ServiceViewSet(viewsets.ModelViewSet):
         service = self.get_object()
         teams = service.teams.all()
         
-        # Appliquer le filtre est_actif si spécifié
+        # on applique le filtre est_actif si spécifié
         est_actif = request.query_params.get('est_actif')
         if est_actif is not None:
             if est_actif.lower() in ('true', 't', '1'):
@@ -394,6 +423,7 @@ class ServiceViewSet(viewsets.ModelViewSet):
         serializer = TeamSerializer(teams, many=True)
         return Response(serializer.data)
     
+    # on crée une vue pour récupérer les utilisateurs d'un service
     @action(detail=True, methods=['get'])
     def users(self, request, pk=None):
         """Récupérer les utilisateurs d'un service"""
@@ -406,6 +436,7 @@ class ServiceViewSet(viewsets.ModelViewSet):
         serializer = UserDetailSerializer(service_users, many=True)
         return Response(serializer.data)
     
+    # on crée une vue pour ajouter un membre à un service
     @action(detail=True, methods=['post'])
     def add_member(self, request, pk=None):
         """Ajouter un membre à un service"""
@@ -422,6 +453,7 @@ class ServiceViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_404_NOT_FOUND
             )
     
+    # on crée une vue pour retirer un membre d'un service
     @action(detail=True, methods=['post'])
     def remove_member(self, request, pk=None):
         """Retirer un membre d'un service"""
@@ -448,6 +480,7 @@ class TeamViewSet(viewsets.ModelViewSet):
     search_fields = ['nom', 'description']
     ordering_fields = ['nom', 'date_creation']
     
+    # on crée une vue pour récupérer les équipes
     def get_queryset(self):
         """Optimise les requêtes pour les équipes"""
         queryset = super().get_queryset()
@@ -464,6 +497,7 @@ class TeamViewSet(viewsets.ModelViewSet):
         
         return queryset
     
+    # on crée une vue pour récupérer les utilisateurs d'une équipe
     @action(detail=True, methods=['get'])
     def users(self, request, pk=None):
         """Récupérer les utilisateurs d'une équipe"""
@@ -492,7 +526,9 @@ class TeamViewSet(viewsets.ModelViewSet):
         user_id = request.data.get('user_id')
         
         try:
+            # on récupère l'utilisateur
             user = User.objects.get(pk=user_id)
+            # on ajoute l'utilisateur à l'équipe
             team.membres.add(user)
             return Response({'status': 'member added'}, status=status.HTTP_200_OK)
         except User.DoesNotExist:
@@ -501,6 +537,7 @@ class TeamViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_404_NOT_FOUND
             )
     
+    # on crée une vue pour retirer un membre d'une équipe
     @action(detail=True, methods=['post'])
     def remove_member(self, request, pk=None):
         """Retirer un membre d'une équipe"""
@@ -517,6 +554,7 @@ class TeamViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_404_NOT_FOUND
             )
 
+# Vue pour les rôles    
 class UserRoleViewSet(viewsets.ModelViewSet):
     """Viewset pour UserRole"""
     queryset = UserRole.objects.all()

@@ -1,21 +1,34 @@
+// ce fichier gere le composant dropdown-menu
+// le composant dropdown-menu est un composant qui permet de gerer les données dans les components
+// car on a besoin de gerer les données dans les components
+// exemple : les menus déroulants dans les pages de gestion des utilisateurs, des produits, des articles, etc.
+//
+
 import * as React from "react"
 import * as DropdownMenuPrimitive from "@radix-ui/react-dropdown-menu"
 import { Check, ChevronRight, Circle } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 
+// creation du composant dropdownMenu
 const DropdownMenu = DropdownMenuPrimitive.Root
 
+// creation du composant dropdownMenuTrigger
 const DropdownMenuTrigger = DropdownMenuPrimitive.Trigger
 
+// creation du composant dropdownMenuGroup
 const DropdownMenuGroup = DropdownMenuPrimitive.Group
 
+// creation du composant dropdownMenuPortal
 const DropdownMenuPortal = DropdownMenuPrimitive.Portal
 
+// creation du composant dropdownMenuSub
 const DropdownMenuSub = DropdownMenuPrimitive.Sub
 
+// creation du composant dropdownMenuRadioGroup
 const DropdownMenuRadioGroup = DropdownMenuPrimitive.RadioGroup
 
+// creation du composant dropdownMenuSubTrigger
 const DropdownMenuSubTrigger = React.forwardRef<
   React.ElementRef<typeof DropdownMenuPrimitive.SubTrigger>,
   React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.SubTrigger> & {
@@ -175,6 +188,11 @@ const DropdownMenuShortcut = ({
   )
 }
 DropdownMenuShortcut.displayName = "DropdownMenuShortcut"
+
+// exportation des composants dropdownMenu, dropdownMenuTrigger, dropdownMenuContent, dropdownMenuItem, dropdownMenuCheckboxItem, dropdownMenuRadioItem, dropdownMenuLabel, dropdownMenuSeparator, dropdownMenuShortcut, dropdownMenuGroup, dropdownMenuPortal, dropdownMenuSub, dropdownMenuSubContent, dropdownMenuSubTrigger, dropdownMenuRadioGroup
+// on utilise export pour exporter les composants
+// car on a besoin de gerer les données dans les components
+// exemple : les menus déroulants dans les pages de gestion des utilisateurs, des produits, des articles, etc.
 
 export {
   DropdownMenu,

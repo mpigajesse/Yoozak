@@ -1,3 +1,9 @@
+
+// ce fichier gere le composant button
+// le composant button est un composant qui permet de gerer les données dans les components
+// car on a besoin de gerer les données dans les components
+// exemple : les boutons dans les pages de gestion des utilisateurs, des produits, des articles, etc. 
+
 "use client";
 
 import { ButtonHTMLAttributes, ReactNode } from "react";
