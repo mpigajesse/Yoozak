@@ -10,7 +10,4 @@ urlpatterns = [
     path('dashboard/', views.dashboard, name='dashboard'),
     path('profile/', views.profile, name='profile'),
     path('profile/edit/', views.edit_profile, name='edit_profile'),
-    
-    # URLs pour l'API (inclus depuis le sous-module api)
-    path('api/', include('users.api.urls')),
 ]

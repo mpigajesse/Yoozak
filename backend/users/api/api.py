@@ -14,36 +14,48 @@ def admin_login(request):
     """
     Endpoint pour l'authentification des administrateurs
     """
-    username = request.data.get('username')
-    password = request.data.get('password')
-    
-    if not username or not password:
+    try:
+        username = request.data.get('username')
+        password = request.data.get('password')
+        
+        if not username or not password:
+            return Response(
+                {"detail": "Veuillez fournir un nom d'utilisateur et un mot de passe."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        user = authenticate(username=username, password=password)
+        
+        if user is None: 
+            return Response(
+                {"detail": "Nom d'utilisateur ou mot de passe incorrect."},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+        
+        if not user.is_staff:
+            return Response(
+                {"detail": "Vous n'avez pas les droits d'administrateur nécessaires."},
+                status=status.HTTP_403_FORBIDDEN
+            )
+        
+        refresh = RefreshToken.for_user(user)
+        
+        # Ajouter des informations supplémentaires au token
+        refresh['user_id'] = user.id
+        refresh['username'] = user.username
+        refresh['is_staff'] = user.is_staff
+        refresh['is_superuser'] = user.is_superuser
+        
+        return Response({
+            "refresh": str(refresh),
+            "access": str(refresh.access_token),
+            "user": AdminUserSerializer(user).data
+        })
+    except Exception as e:
         return Response(
-            {"detail": "Veuillez fournir un nom d'utilisateur et un mot de passe."},
-            status=status.HTTP_400_BAD_REQUEST
+            {"detail": str(e)},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
         )
-    
-    user = authenticate(username=username, password=password)
-    
-    if user is None: 
-        return Response(
-            {"detail": "Nom d'utilisateur ou mot de passe incorrect."},
-            status=status.HTTP_401_UNAUTHORIZED
-        )
-    
-    if not user.is_staff:
-        return Response(
-            {"detail": "Vous n'avez pas les droits d'administrateur nécessaires."},
-            status=status.HTTP_403_FORBIDDEN
-        )
-    
-    refresh = RefreshToken.for_user(user)
-    
-    return Response({
-        "refresh": str(refresh),
-        "access": str(refresh.access_token),
-        "user": AdminUserSerializer(user).data
-    })
 
 @api_view(['POST'])
 @permission_classes([AllowAny])

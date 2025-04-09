@@ -2,9 +2,16 @@
 
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { getUserInfo, loginUser, logoutUser, updateUserProfile, refreshToken, verifyToken } from "@/services/auth";
-import { USER_KEY, TOKEN_KEY } from "@/config/constants";
+import { getUserInfo, loginUser, logoutUser, updateUserProfile, refreshToken, verifyToken } from "@/services/api";
 import { User } from "@/types";
+
+// Types pour l'authentification
+interface AuthResponse {
+  access: string;
+  refresh: string;
+  user?: any;
+  user_roles?: string[];
+}
 
 interface AuthState {
   isAuthenticated: boolean;
@@ -76,7 +83,8 @@ export const useAuthStore = create<AuthState>()(
         set({ isLoading: true, error: null });
         try {
           console.log(`Connexion avec l'utilisateur: ${username}`);
-          const data = await loginUser(username, password);
+          const response = await loginUser(username, password);
+          const data = response as unknown as AuthResponse;
           console.log("Données d'authentification reçues:", data);
           
           if (data.access && data.refresh) {
@@ -200,16 +208,15 @@ export const useAuthStore = create<AuthState>()(
             };
             
             set({ 
-              user: userWithCorrectFormat, 
-              isLoading: false
+              user: userWithCorrectFormat,
+              isLoading: false 
             });
-            
             return userWithCorrectFormat;
           }
           
-          set({ isLoading: false });
-          throw new Error("Aucun utilisateur connecté pour mettre à jour les informations");
+          return null;
         } catch (error: any) {
+          console.error("Erreur updateUserInfo:", error);
           set({ 
             isLoading: false, 
             error: error.message || "Échec de la mise à jour des données utilisateur"
@@ -218,78 +225,53 @@ export const useAuthStore = create<AuthState>()(
         }
       },
       
-      clearError: () => set({ error: null }),
+      clearError: () => {
+        set({ error: null });
+      },
       
       refreshAuthToken: async () => {
         const currentRefreshToken = get().refreshToken;
-        
         if (!currentRefreshToken) {
-          throw new Error("Aucun refresh token disponible");
+          return false;
         }
         
         try {
-          console.log("Rafraîchissement du token...");
-          const data = await refreshToken(currentRefreshToken);
-          
+          const response = await refreshToken(currentRefreshToken);
+          const data = response as unknown as AuthResponse;
           if (data.access) {
             localStorage.setItem("token", data.access);
             set({ token: data.access });
             return true;
-          } else {
-            throw new Error("Réponse de rafraîchissement de token incomplète");
           }
-        } catch (error: any) {
-          // En cas d'échec, déconnexion
-          get().logout();
-          throw error;
+          return false;
+        } catch (error) {
+          console.error("Erreur lors du rafraîchissement du token:", error);
+          return false;
         }
       },
-
+      
       checkAuth: async () => {
-        const token = localStorage.getItem("token");
+        const token = get().token;
         if (!token) {
           return false;
         }
-
+        
         try {
-          // Vérifier si le token est valide
           await verifyToken(token);
-          
-          // Si l'utilisateur n'est pas déjà chargé, récupérer ses informations
-          if (!get().user) {
-            await get().getUserInfo();
-          }
-          
-          set({ isAuthenticated: true });
           return true;
         } catch (error) {
-          console.error("Erreur de vérification du token:", error);
-          
-          // Essayer de rafraîchir le token
-          try {
-            const refreshSuccess = await get().refreshAuthToken();
-            if (refreshSuccess) {
-              set({ isAuthenticated: true });
-              return true;
-            }
-          } catch (refreshError) {
-            console.error("Échec du rafraîchissement du token:", refreshError);
-          }
-          
-          // Si tout échoue, déconnecter l'utilisateur
-          get().logout();
+          console.error("Erreur lors de la vérification du token:", error);
           return false;
         }
-      }
+      },
     }),
     {
-      name: "auth-storage", // nom du stockage dans localStorage
+      name: "auth-storage",
       partialize: (state) => ({
-        user: state.user,
         token: state.token,
         refreshToken: state.refreshToken,
-        isAuthenticated: state.isAuthenticated
-      })
+        user: state.user,
+      }),
     }
   )
 );

@@ -574,7 +574,7 @@ export default function UserDetailPage({ params }: { params: { id: string } }) {
                         readOnly={activeTab !== "profile"}
                         onChange={(e) => handleUpdateUser({ username: e.target.value })}
                       />
-                    </div>
+                </div>
                     <div className="space-y-2">
                       <Label htmlFor="matricule">Matricule</Label>
                       <Input 
@@ -583,7 +583,7 @@ export default function UserDetailPage({ params }: { params: { id: string } }) {
                         readOnly={activeTab !== "profile"}
                         onChange={(e) => handleUpdateProfile({ matricule: e.target.value })}
                       />
-                    </div>
+              </div>
                     <div className="space-y-2">
                       <Label htmlFor="poste">Poste</Label>
                       <Input 
@@ -592,7 +592,7 @@ export default function UserDetailPage({ params }: { params: { id: string } }) {
                         readOnly={activeTab !== "profile"}
                         onChange={(e) => handleUpdateProfile({ poste: e.target.value })}
                       />
-                    </div>
+                  </div>
                     <div className="space-y-2 md:col-span-2">
                       <div className="flex items-center space-x-2">
                         <Switch 
@@ -602,22 +602,22 @@ export default function UserDetailPage({ params }: { params: { id: string } }) {
                           onCheckedChange={(checked) => handleUpdateUser({ is_active: checked })}
                         />
                         <Label htmlFor="is_active">Utilisateur actif</Label>
-                      </div>
-                    </div>
+                  </div>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </CardContent>
+          </Card>
           </TabsContent>
           
           <TabsContent value="roles">
-            <Card>
-              <CardHeader>
+          <Card>
+            <CardHeader>
                 <CardTitle>Rôles et Affectations</CardTitle>
                 <CardDescription>
                   Gérez les rôles et les affectations dans l'organisation
                 </CardDescription>
-              </CardHeader>
+            </CardHeader>
               <CardContent>
                 <div className="space-y-6">
                   {user.roles.map((userRole, index) => (
@@ -640,13 +640,13 @@ export default function UserDetailPage({ params }: { params: { id: string } }) {
                               {userRole.service.nom}
                             </Badge>
                           )}
-                        </div>
+                  </div>
                         {activeTab === "roles" && (
                           <Button variant="outline" size="sm" className="text-red-500 hover:text-red-600" onClick={() => handleRemoveRole(userRole.id)}>
                             Supprimer
                           </Button>
                         )}
-                      </div>
+                  </div>
                       {activeTab === "roles" && (
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
                           <div>
@@ -663,7 +663,7 @@ export default function UserDetailPage({ params }: { params: { id: string } }) {
                                 ))}
                               </SelectContent>
                             </Select>
-                          </div>
+                  </div>
                           <div>
                             <Label htmlFor={`pole-${index}`}>Pôle</Label>
                             <Select defaultValue={userRole.pole?.id.toString()}>
@@ -678,7 +678,7 @@ export default function UserDetailPage({ params }: { params: { id: string } }) {
                                 ))}
                               </SelectContent>
                             </Select>
-                          </div>
+                </div>
                           <div>
                             <Label htmlFor={`service-${index}`}>Service</Label>
                             <Select defaultValue={userRole.service?.id.toString()}>
@@ -696,9 +696,9 @@ export default function UserDetailPage({ params }: { params: { id: string } }) {
                                 }
                               </SelectContent>
                             </Select>
-                          </div>
-                        </div>
-                      )}
+                  </div>
+                </div>
+              )}
                     </div>
                   ))}
                   {activeTab === "roles" && (
@@ -721,8 +721,8 @@ export default function UserDetailPage({ params }: { params: { id: string } }) {
               </CardHeader>
               <CardContent>
                 <p>Contenu de l'onglet sécurité...</p>
-              </CardContent>
-            </Card>
+            </CardContent>
+          </Card>
           </TabsContent>
           
           <TabsContent value="activity">

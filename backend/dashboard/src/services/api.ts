@@ -1,18 +1,9 @@
 "use client";
 
-import axios, { AxiosError } from "axios";
+import axios from "axios";
 
 // Configuration de l'URL de base pour les appels API
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
-
-// Types pour les réponses API
-interface ApiResponse<T> {
-  results?: T[];
-  count?: number;
-  next?: string | null;
-  previous?: string | null;
-  [key: string]: any;
-}
 
 // Création d'une instance axios avec configuration par défaut
 const apiClient = axios.create({
@@ -29,6 +20,7 @@ apiClient.interceptors.request.use(
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
+    console.log("Envoi d'une requête API vers:", config.url);
     return config;
   },
   (error) => Promise.reject(error)
@@ -37,6 +29,7 @@ apiClient.interceptors.request.use(
 // Intercepteur pour gérer les erreurs globalement
 apiClient.interceptors.response.use(
   (response) => {
+    console.log("Réponse API reçue:", response.config.url, response.status);
     // On s'assure de renvoyer les données correctement
     // Si la réponse contient un champ 'results', on le renvoie directement
     if (response.data && response.data.results !== undefined) {
@@ -46,10 +39,11 @@ apiClient.interceptors.response.use(
     return response.data;
   },
   (error) => {
+    console.error("Erreur API:", error.response?.status, error.response?.data);
     // Gestion des erreurs d'authentification (401)
     if (error.response && error.response.status === 401) {
       // Rediriger vers la page de connexion si le token est expiré
-      if (typeof window !== 'undefined') {
+        if (typeof window !== 'undefined') {
         localStorage.removeItem('token');
         localStorage.removeItem('refreshToken');
         window.location.href = '/login';
@@ -65,13 +59,18 @@ apiClient.interceptors.response.use(
 // Service API pour la gestion des utilisateurs
 const userService = {
   // Récupérer tous les utilisateurs avec filtres optionnels
-  getUsers: (params = {}) => apiClient.get('/users/', { params }),
+  getUsers: (params = {}) => {
+    console.log("Récupération des utilisateurs avec params:", params);
+    // Par défaut, inclure tous les utilisateurs (actifs et inactifs)
+    const defaultParams = { est_actif: null, ...params };
+    return apiClient.get('/users/', { params: defaultParams });
+  },
   
   // Récupérer un utilisateur par ID
   getUserById: (id: number | string) => apiClient.get(`/users/${id}/`),
   
   // Créer un nouvel utilisateur
-  createUser: (userData: any) => apiClient.post('/users/', userData),
+  createUser: (userData: any) => apiClient.post('/users/users/', userData),
   
   // Mettre à jour un utilisateur existant
   updateUser: (id: number | string, userData: any) => apiClient.patch(`/users/${id}/`, userData),

@@ -126,11 +126,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
     """Sérialiseur pour UserProfile"""
     class Meta:
         model = UserProfile
-        fields = [
-            'id', 'matricule', 'photo', 'telephone', 'adresse',
-            'date_embauche', 'poste', 'biographie', 'competences',
-            'est_actif'
-        ]
+        fields = ['avatar', 'poste', 'bio', 'date_naissance', 'telephone']
 
 class UserRoleSerializer(serializers.ModelSerializer):
     """Sérialiseur pour UserRole"""
@@ -151,21 +147,28 @@ class UserRoleSerializer(serializers.ModelSerializer):
 
 class UserDetailSerializer(serializers.ModelSerializer):
     """Sérialiseur détaillé pour User"""
-    profile = UserProfileSerializer(required=False)
+    profile = UserProfileSerializer(read_only=True)
     roles = UserRoleSerializer(many=True, read_only=True)
     services = serializers.SerializerMethodField()
+    roles_count = serializers.SerializerMethodField()
     
     class Meta:
         model = User
         fields = [
             'id', 'username', 'email', 'first_name', 'last_name',
             'is_active', 'is_staff', 'date_joined', 'profile', 
-            'roles', 'services'
+            'roles', 'services', 'roles_count'
         ]
         read_only_fields = ['is_staff', 'date_joined']
     
     def get_services(self, obj):
         return ServiceSerializer(obj.services.all(), many=True).data
+    
+    def get_roles_count(self, obj):
+        # Utilisez cette méthode au lieu de faire un .count() qui génère une requête
+        if hasattr(obj, 'roles'):
+            return len([r for r in obj.roles.all() if r.est_actif])
+        return 0
     
     def create(self, validated_data):
         """Créer un utilisateur avec son profil"""

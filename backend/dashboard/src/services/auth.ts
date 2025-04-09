@@ -2,6 +2,14 @@
 
 import { apiService } from "./api";
 
+// Interface pour la réponse d'authentification
+interface AuthResponse {
+  access: string;
+  refresh: string;
+  user?: any;
+  user_roles?: string[];
+}
+
 // Fonction pour obtenir les informations de l'utilisateur courant
 export const getUserInfo = async () => {
   try {
@@ -17,13 +25,13 @@ export const getUserInfo = async () => {
 };
 
 // Fonction pour connecter un utilisateur
-export const loginUser = async (username: string, password: string) => {
+export const loginUser = async (username: string, password: string): Promise<AuthResponse> => {
   try {
     // Route standard pour Simple JWT dans Django
     console.log("Appel à l'API d'authentification avec:", { username });
     const response = await apiService.post('/token/', { username, password });
     console.log("Réponse de l'API d'authentification:", response);
-    return response;
+    return response.data;
   } catch (error) {
     console.error("Erreur de connexion:", error);
     throw error;
@@ -55,11 +63,11 @@ export const updateUserProfile = async (userData: any) => {
 };
 
 // Fonction pour rafraîchir le token
-export const refreshToken = async (token: string) => {
+export const refreshToken = async (token: string): Promise<AuthResponse> => {
   try {
     // Route standard pour le rafraîchissement du token Simple JWT
     const response = await apiService.post('/token/refresh/', { refresh: token });
-    return response;
+    return response.data;
   } catch (error) {
     console.error("Erreur lors du rafraîchissement du token:", error);
     throw error;

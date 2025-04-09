@@ -122,7 +122,7 @@ Nous utilisons le modèle User natif de Django comme base, qui fournit:
 
 ## Structure organisationnelle de Yoozak
 
-En tant que plateforme e-commerce, Yoozak organise ses pôles et services pour répondre aux besoins spécifiques de son activité. Voici la structure organisationnelle détaillée:
+En tant que plateforme e-commerce, Yoozak peut organiser ses pôles et services pour répondre aux besoins spécifiques de son activité. Voici la structure organisationnelle détaillée:
 
 ### 1. Pôle CLIENTS
 ```

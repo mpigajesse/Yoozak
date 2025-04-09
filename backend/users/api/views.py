@@ -31,9 +31,29 @@ def current_user(request):
     """
     Endpoint simple qui renvoie les informations de l'utilisateur actuellement connecté
     """
-    user = request.user
-    serializer = AdminUserSerializer(user)
-    return Response(serializer.data)
+    try:
+        user = request.user
+        if not user.is_authenticated:
+            return Response(
+                {"detail": "Non authentifié"},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+            
+        # Vérifier si l'utilisateur a un token JWT valide
+        auth_header = request.headers.get('Authorization')
+        if not auth_header or not auth_header.startswith('Bearer '):
+            return Response(
+                {"detail": "Token JWT manquant ou invalide"},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+            
+        serializer = AdminUserSerializer(user)
+        return Response(serializer.data)
+    except Exception as e:
+        return Response(
+            {"detail": str(e)},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
 
 class AdminUserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
@@ -219,13 +239,60 @@ class LoginViewSet(viewsets.ViewSet):
 
 class UserViewSet(viewsets.ModelViewSet):
     """Viewset pour User"""
-    queryset = User.objects.all()
+    queryset = User.objects.all().select_related('profile').prefetch_related(
+        'roles', 'roles__pole', 'roles__service', 'roles__team',
+        'services', 'teams'
+    )
     serializer_class = UserDetailSerializer
     permission_classes = [permissions.IsAuthenticated]
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     filterset_fields = ['is_active', 'is_staff']
     search_fields = ['username', 'email', 'first_name', 'last_name', 'profile__poste']
     ordering_fields = ['username', 'date_joined', 'last_name']
+    
+    def get_queryset(self):
+        """Optimise les requêtes en utilisant select_related et prefetch_related"""
+        queryset = super().get_queryset()
+        
+        # N'appliquer les filtres que si la requête contient des paramètres
+        # Cela permet d'utiliser les filtres du view par défaut si aucun paramètre n'est spécifié
+        if self.request.query_params:
+            # Filtrer sur is_active si le paramètre est fourni
+            is_active = self.request.query_params.get('is_active')
+            if is_active is not None:
+                if is_active.lower() in ('true', 't', '1'):
+                    queryset = queryset.filter(is_active=True)
+                elif is_active.lower() in ('false', 'f', '0'):
+                    queryset = queryset.filter(is_active=False)
+                # Si is_active est vide ou 'all', ne pas filtrer
+            
+            # Filtrer par rôle si spécifié
+            role = self.request.query_params.get('role')
+            if role:
+                queryset = queryset.filter(roles__role=role)
+                
+            # Filtrer par pôle si spécifié
+            pole_id = self.request.query_params.get('pole')
+            if pole_id:
+                queryset = queryset.filter(roles__pole_id=pole_id)
+                
+            # Filtrer par service si spécifié
+            service_id = self.request.query_params.get('service')
+            if service_id:
+                queryset = queryset.filter(
+                    models.Q(roles__service_id=service_id) | 
+                    models.Q(servicemembre__service_id=service_id)
+                ).distinct()
+                
+            # Filtrer par équipe si spécifié
+            team_id = self.request.query_params.get('team')
+            if team_id:
+                queryset = queryset.filter(
+                    models.Q(roles__team_id=team_id) | 
+                    models.Q(teammembre__team_id=team_id)
+                ).distinct()
+        
+        return queryset.distinct()
     
     @action(detail=False, methods=['get'])
     def me(self, request):
@@ -263,6 +330,10 @@ class PoleViewSet(viewsets.ModelViewSet):
     search_fields = ['nom', 'description']
     ordering_fields = ['nom', 'date_creation']
     
+    def get_queryset(self):
+        """Optimisation des requêtes avec prefetch_related"""
+        return Pole.objects.all().prefetch_related('services', 'roles')
+    
     @action(detail=True, methods=['get'])
     def services(self, request, pk=None):
         """Récupérer les services d'un pôle"""
@@ -282,7 +353,7 @@ class PoleViewSet(viewsets.ModelViewSet):
 
 class ServiceViewSet(viewsets.ModelViewSet):
     """Viewset pour Service"""
-    queryset = Service.objects.all()
+    queryset = Service.objects.all().select_related('pole', 'responsable').prefetch_related('teams')
     serializer_class = ServiceSerializer
     permission_classes = [permissions.IsAuthenticated]
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
@@ -290,11 +361,36 @@ class ServiceViewSet(viewsets.ModelViewSet):
     search_fields = ['nom', 'description']
     ordering_fields = ['nom', 'date_creation']
     
+    def get_queryset(self):
+        """Optimise les requêtes pour les services"""
+        queryset = super().get_queryset()
+        
+        # Ajouter des filtres supplémentaires si nécessaire
+        if self.request.query_params:
+            # Filtrer par est_actif si spécifié
+            est_actif = self.request.query_params.get('est_actif')
+            if est_actif is not None:
+                if est_actif.lower() in ('true', 't', '1'):
+                    queryset = queryset.filter(est_actif=True)
+                elif est_actif.lower() in ('false', 'f', '0'):
+                    queryset = queryset.filter(est_actif=False)
+        
+        return queryset
+    
     @action(detail=True, methods=['get'])
     def teams(self, request, pk=None):
         """Récupérer les équipes d'un service"""
         service = self.get_object()
-        teams = service.teams.filter(est_actif=True)
+        teams = service.teams.all()
+        
+        # Appliquer le filtre est_actif si spécifié
+        est_actif = request.query_params.get('est_actif')
+        if est_actif is not None:
+            if est_actif.lower() in ('true', 't', '1'):
+                teams = teams.filter(est_actif=True)
+            elif est_actif.lower() in ('false', 'f', '0'):
+                teams = teams.filter(est_actif=False)
+        
         serializer = TeamSerializer(teams, many=True)
         return Response(serializer.data)
     
@@ -344,13 +440,29 @@ class ServiceViewSet(viewsets.ModelViewSet):
 
 class TeamViewSet(viewsets.ModelViewSet):
     """Viewset pour Team"""
-    queryset = Team.objects.all()
+    queryset = Team.objects.all().select_related('service', 'service__pole', 'responsable')
     serializer_class = TeamSerializer
     permission_classes = [permissions.IsAuthenticated]
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     filterset_fields = ['est_actif', 'service', 'service__pole']
     search_fields = ['nom', 'description']
     ordering_fields = ['nom', 'date_creation']
+    
+    def get_queryset(self):
+        """Optimise les requêtes pour les équipes"""
+        queryset = super().get_queryset()
+        
+        # Ajouter des filtres supplémentaires si nécessaire
+        if self.request.query_params:
+            # Filtrer par est_actif si spécifié
+            est_actif = self.request.query_params.get('est_actif')
+            if est_actif is not None:
+                if est_actif.lower() in ('true', 't', '1'):
+                    queryset = queryset.filter(est_actif=True)
+                elif est_actif.lower() in ('false', 'f', '0'):
+                    queryset = queryset.filter(est_actif=False)
+        
+        return queryset
     
     @action(detail=True, methods=['get'])
     def users(self, request, pk=None):
@@ -360,7 +472,16 @@ class TeamViewSet(viewsets.ModelViewSet):
         team_users = User.objects.filter(
             models.Q(teammembre__team=team) |
             models.Q(roles__team=team, roles__est_actif=True)
-        ).distinct()
+        ).select_related('profile').prefetch_related('roles').distinct()
+        
+        # Filtrer par is_active si spécifié
+        is_active = request.query_params.get('is_active')
+        if is_active is not None:
+            if is_active.lower() in ('true', 't', '1'):
+                team_users = team_users.filter(is_active=True)
+            elif is_active.lower() in ('false', 'f', '0'):
+                team_users = team_users.filter(is_active=False)
+        
         serializer = UserDetailSerializer(team_users, many=True)
         return Response(serializer.data)
     

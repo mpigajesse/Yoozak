@@ -83,8 +83,26 @@ const UsersPage = () => {
         // Tentative de récupération des utilisateurs depuis l'API
         try {
           const response = await apiService.users.getUsers(params);
+          console.log("Réponse des utilisateurs:", response);
+          
           // S'assurer que response est un tableau, sinon utiliser un tableau vide
-          setUsers(Array.isArray(response) ? response : (response?.results || []));
+          if (Array.isArray(response)) {
+            setUsers(response);
+          } else if (response?.results && Array.isArray(response.results)) {
+            setUsers(response.results);
+          } else if (response && typeof response === 'object') {
+            // Si la réponse est un objet mais pas un tableau, vérifier s'il contient des utilisateurs
+            const responseObj = response as any;
+            if (responseObj.count !== undefined && responseObj.results) {
+              setUsers(responseObj.results);
+            } else {
+              console.warn("Format de réponse inattendu:", response);
+              setUsers([]);
+            }
+          } else {
+            console.warn("Format de réponse inattendu:", response);
+            setUsers([]);
+          }
         } catch (apiError) {
           console.error("Erreur lors de la récupération des utilisateurs:", apiError);
           // En cas d'erreur d'API, utiliser les données simulées pour le développement

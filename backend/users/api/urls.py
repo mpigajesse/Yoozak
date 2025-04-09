@@ -20,9 +20,10 @@ from .api import admin_login, admin_token_refresh, admin_update_profile, admin_c
 # Création du routeur pour l'API
 router = DefaultRouter()
 router.register(r'users', UserViewSet, basename='user')
-router.register(r'poles', PoleViewSet, basename='pole')
-router.register(r'services', ServiceViewSet, basename='service')
-router.register(r'teams', TeamViewSet, basename='team')
+# Ces endpoints sont maintenant exposés au niveau racine dans config/urls.py
+# router.register(r'poles', PoleViewSet, basename='pole')
+# router.register(r'services', ServiceViewSet, basename='service')
+# router.register(r'teams', TeamViewSet, basename='team')
 router.register(r'roles', UserRoleViewSet, basename='user-role')
 router.register(r'admin/users', AdminUserViewSet, basename='admin-user')
 
@@ -38,7 +39,7 @@ urlpatterns = [
     path('current/', current_user, name='current-user'),
     # URL directe pour le profil administrateur
     path('profile/', AdminProfileView.as_view(), name='admin-profile'),
-    # URLs d'authentification admin
+    # URLs d'authentification
     path('auth/', include(auth_patterns)),
     # URL pour mettre à jour le profil admin
     path('profile/update/', admin_update_profile, name='admin-update-profile'),
