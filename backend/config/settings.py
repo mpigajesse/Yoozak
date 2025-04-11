@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'drf_yasg', # pour la documentation de l'api avec swagger , il permet de gerer les routes et les schemas
     'django_extensions', # pour les extensions django 
     # Applications personnalisées
+    'users', # Application de gestion des utilisateurs et de l'organisation
     'products',
     'clients',
     'commandes',
@@ -191,7 +192,7 @@ REST_FRAMEWORK = {
 from datetime import timedelta
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(hours=1),
+    'ACCESS_TOKEN_LIFETIME': timedelta(hours=24),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
     'ROTATE_REFRESH_TOKENS': False,
     'ALGORITHM': 'HS256',

@@ -1,12 +1,21 @@
+// ce fichier gere la configuration de tailwindcss pour le dashboard
+// on utilise tailwind.config.js pour gerer la configuration de tailwindcss pour le dashboard
+// tailwind.config.js est un fichier de configuration pour tailwindcss pour le dashboard
+
+
 /** @type {import('tailwindcss').Config} */
 module.exports = {
+  // on utilise darkMode pour gerer le thème du site
   darkMode: ['class'],
+  // on utilise content pour gerer le contenu du site
   content: [
+    // on utilise content pour gerer le contenu du site
     './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
     './src/components/**/*.{js,ts,jsx,tsx,mdx}',
     './src/app/**/*.{js,ts,jsx,tsx,mdx}',
   ],
   theme: {
+    // on utilise container pour gerer le conteneur du site
     container: {
       center: true,
       padding: '2rem',
@@ -15,6 +24,7 @@ module.exports = {
       },
     },
     extend: {
+      // on utilise screens pour gerer les écrans du site
       screens: {
         'xs': '480px',
       },

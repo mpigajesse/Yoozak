@@ -1,20 +1,46 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import AdminUserViewSet, AdminProfileView, current_user, user_detail
+from rest_framework_simplejwt.views import TokenRefreshView, TokenVerifyView
+
+from .views import (
+    LoginViewSet,
+    UserViewSet,
+    PoleViewSet,
+    ServiceViewSet,
+    TeamViewSet,
+    UserRoleViewSet,
+    AdminUserViewSet,
+    AdminProfileView,
+    current_user,
+    user_detail
+)
+
 from .api import admin_login, admin_token_refresh, admin_update_profile, admin_create_user, admin_delete_user
 
-# Routes pour les utilisateurs admin
+# Création du routeur pour l'API
 router = DefaultRouter()
-router.register('', AdminUserViewSet, basename='user')
+router.register(r'users', UserViewSet, basename='user')
+# Ces endpoints sont maintenant exposés au niveau racine dans config/urls.py
+# router.register(r'poles', PoleViewSet, basename='pole')
+# router.register(r'services', ServiceViewSet, basename='service')
+# router.register(r'teams', TeamViewSet, basename='team')
+router.register(r'roles', UserRoleViewSet, basename='user-role')
+router.register(r'admin/users', AdminUserViewSet, basename='admin-user')
+
+# Endpoints d'authentification
+auth_patterns = [
+    path('login/', LoginViewSet.as_view({'post': 'login'}), name='login'),
+    path('refresh/', TokenRefreshView.as_view(), name='token-refresh'),
+    path('verify/', TokenVerifyView.as_view(), name='token-verify'),
+]
 
 urlpatterns = [
     # URL simple pour l'utilisateur courant
     path('current/', current_user, name='current-user'),
     # URL directe pour le profil administrateur
     path('profile/', AdminProfileView.as_view(), name='admin-profile'),
-    # URLs d'authentification admin
-    path('auth/login/', admin_login, name='admin-login'),
-    path('auth/refresh/', admin_token_refresh, name='admin-token-refresh'),
+    # URLs d'authentification
+    path('auth/', include(auth_patterns)),
     # URL pour mettre à jour le profil admin
     path('profile/update/', admin_update_profile, name='admin-update-profile'),
     # URL pour créer un nouvel utilisateur admin

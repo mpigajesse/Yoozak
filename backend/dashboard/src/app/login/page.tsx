@@ -6,8 +6,7 @@ import { useAuthStore } from "@/store/authStore";
 import { useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
 import Image from "next/image";
-import Link from "next/link";
-import { FiArrowLeft, FiUser, FiLock, FiEye, FiEyeOff, FiInfo } from "react-icons/fi";
+import { FiUser, FiLock, FiEye, FiEyeOff, FiInfo } from "react-icons/fi";
 import { cn } from "@/lib/utils";
 import ThemeToggle from "@/components/ui/ThemeToggle";
 import { Button } from "@/components/ui/button";
@@ -307,7 +306,7 @@ export default function LoginPage() {
                 type="button"
                 variant="outline"
                 color="primary"
-                size="md"
+                size="default"
                 withMotion
                 className="w-full"
                 onClick={() => router.push('/register')}

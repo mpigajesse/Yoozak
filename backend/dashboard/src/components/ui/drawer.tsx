@@ -1,6 +1,19 @@
+// ce fichier gere le composant drawer
+// le composant drawer est un composant qui permet de gerer les données dans les components
+// car on a besoin de gerer les données dans les components
+// exemple : les tiroirs dans les pages de gestion des utilisateurs, des produits, des articles, etc.
+
+// creation du composant drawer
 import * as React from "react"
 import { X } from "lucide-react"
 import { cn } from "@/lib/utils"
+
+// creation de l'interface drawerProps
+// on utilise React.HTMLAttributes<HTMLDivElement> pour creer l'interface drawerProps
+// on utilise open pour gerer la visibilite du tiroir
+// on utilise onOpenChange pour gerer la visibilite du tiroir
+// on utilise onClose pour gerer la visibilite du tiroir
+// on utilise side pour gerer la position du tiroir 
 
 interface DrawerProps extends React.HTMLAttributes<HTMLDivElement> {
   open?: boolean;
@@ -9,6 +22,8 @@ interface DrawerProps extends React.HTMLAttributes<HTMLDivElement> {
   side?: "left" | "right";
 }
 
+// creation du composant drawer
+// on utilise React.forwardRef pour creer le composant drawer
 const Drawer = React.forwardRef<HTMLDivElement, DrawerProps>(
   ({ className, children, open, onOpenChange, onClose, side = "left", ...props }, ref) => {
     const [internalOpen, setInternalOpen] = React.useState(open || false)

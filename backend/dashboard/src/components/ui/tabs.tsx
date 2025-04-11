@@ -1,3 +1,7 @@
+// ce fichier gere le composant tabs
+// le composant tabs est un composant qui permet de gerer les données dans les components
+// car on a besoin de gerer les données dans les components
+
 "use client"
 
 import * as React from "react"
@@ -5,6 +9,9 @@ import * as TabsPrimitive from "@radix-ui/react-tabs"
 import { cn } from "@/lib/utils"
 
 const Tabs = TabsPrimitive.Root
+
+// creation du composant tabsList
+// on utilise TabsPrimitive.List pour creer le composant tabsList
 
 const TabsList = React.forwardRef<
   React.ElementRef<typeof TabsPrimitive.List>,
@@ -21,6 +28,9 @@ const TabsList = React.forwardRef<
 ))
 TabsList.displayName = TabsPrimitive.List.displayName
 
+// creation du composant tabsTrigger
+// on utilise TabsPrimitive.Trigger pour creer le composant tabsTrigger
+
 const TabsTrigger = React.forwardRef<
   React.ElementRef<typeof TabsPrimitive.Trigger>,
   React.ComponentPropsWithoutRef<typeof TabsPrimitive.Trigger>
@@ -36,6 +46,9 @@ const TabsTrigger = React.forwardRef<
 ))
 TabsTrigger.displayName = TabsPrimitive.Trigger.displayName
 
+// creation du composant tabsContent
+// on utilise TabsPrimitive.Content pour creer le composant tabsContent
+
 const TabsContent = React.forwardRef<
   React.ElementRef<typeof TabsPrimitive.Content>,
   React.ComponentPropsWithoutRef<typeof TabsPrimitive.Content>
@@ -50,5 +63,8 @@ const TabsContent = React.forwardRef<
   />
 ))
 TabsContent.displayName = TabsPrimitive.Content.displayName
+
+// exportation des composants tabs, tabsList, tabsTrigger, tabsContent
+// on utilise export pour exporter les composants
 
 export { Tabs, TabsList, TabsTrigger, TabsContent } 

@@ -71,7 +71,7 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) =>
   // Rediriger vers la page de connexion si non authentifié
   useEffect(() => {
     if (mounted && !isAuthenticated) {
-      router.push('/auth/signin');
+      router.push('/login');
     }
   }, [isAuthenticated, router, mounted]);
 
@@ -223,4 +223,7 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) =>
       />
     </div>
   );
-}; 
+};
+
+// Ajouter un export par défaut du composant
+export default DashboardLayout; 

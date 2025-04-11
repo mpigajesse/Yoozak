@@ -2,10 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { DashboardLayout } from '@/components/layouts/DashboardLayout';
-import { CardGrid } from '@/components/ui/dashboard/CardGrid';
-import { DashboardCard, StatCard } from '@/components/ui/dashboard/DashboardCard';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { StatCard } from '@/components/ui/dashboard/DashboardCard';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -64,21 +62,27 @@ const DashboardPage = () => {
   const [mounted, setMounted] = useState(false);
   const [recentUsers, setRecentUsers] = useState<User[]>([]);
   const [isLoadingUsers, setIsLoadingUsers] = useState(true);
-
+ 
   useEffect(() => {
     setMounted(true);
     
     const fetchRecentUsers = async () => {
       try {
         // Récupération des utilisateurs récents
-        const response = await apiService.get('/api/users/');
+        const response = await apiService.users.getUsers();
         
         // Filtrer les utilisateurs avec last_login et trier par date de dernière connexion
         let users: User[] = [];
         if (Array.isArray(response)) {
           users = response;
-        } else if (response.results && Array.isArray(response.results)) {
-          users = response.results;
+        } else if (response && typeof response === 'object') {
+          // Si la réponse a une structure paginée
+          if (Array.isArray((response as any).results)) {
+            users = (response as any).results;
+          } else {
+            // Sinon, utiliser la réponse directement si c'est un objet
+            users = Array.isArray(response) ? response as any : [response as any];
+          }
         }
         
         const sortedUsers = users

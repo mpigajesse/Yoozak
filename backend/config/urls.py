@@ -26,6 +26,8 @@ from rest_framework_simplejwt.views import (
     TokenRefreshView,
     TokenVerifyView,
 )
+from users.api.views import ServiceViewSet, TeamViewSet, PoleViewSet
+from rest_framework.routers import DefaultRouter
 
 # Configuration de Swagger pour la documentation de l'API
 schema_view = get_schema_view(
@@ -41,6 +43,12 @@ schema_view = get_schema_view(
     permission_classes=(permissions.AllowAny,),
 )
 
+# Créer un routeur pour les endpoints d'organisation
+org_router = DefaultRouter()
+org_router.register(r'services', ServiceViewSet, basename='service')
+org_router.register(r'teams', TeamViewSet, basename='team')
+org_router.register(r'poles', PoleViewSet, basename='pole')
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     
@@ -54,12 +62,13 @@ urlpatterns = [
         path('commandes/', include('commandes.urls')),
         path('users/', include('users.api.urls')),
         
+        # Endpoints d'organisation (services, teams, pôles) directement accessibles au niveau racine API
+        path('', include(org_router.urls)),
+        
         # Authentification JWT
         path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
         path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
         path('token/verify/', TokenVerifyView.as_view(), name='token_verify'),
-        
-        # Ajouter d'autres applications API ici
     ])),
     
     # Documentation API

@@ -1,8 +1,17 @@
+
+// ce fichier gere le composant button
+// le composant button est un composant qui permet de gerer les données dans les components
+// car on a besoin de gerer les données dans les components
+// exemple : les boutons dans les pages de gestion des utilisateurs, des produits, des articles, etc. 
+
 "use client";
 
 import { ButtonHTMLAttributes, ReactNode } from "react";
 import { motion, HTMLMotionProps } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { cva, VariantProps } from "class-variance-authority";
+import React from "react";
+import { Slot } from "@radix-ui/react-slot";
 
 // Palette de couleurs pour les boutons
 const buttonColors = {
@@ -81,10 +90,47 @@ const gradientStyles = {
   "emerald-green": "from-emerald-600 to-green-500 hover:from-emerald-700 hover:to-green-600 dark:from-emerald-500 dark:to-green-400 dark:hover:from-emerald-600 dark:hover:to-green-500 focus:ring-emerald-500/30",
 };
 
-type ButtonVariant = "primary" | "secondary" | "outline" | "ghost" | "danger" | "success" | "warning" | "info" | "gradient";
-type ButtonSize = "xs" | "sm" | "md" | "lg" | "xl";
-type ButtonColor = "primary" | "secondary" | "success" | "warning" | "danger" | "info" | "create" | "edit" | "cancel" | "save";
-type GradientType = "violet-blue" | "blue-cyan" | "green-emerald" | "orange-red" | "purple-pink" | "indigo-purple" | "teal-cyan" | "emerald-green" | "default";
+export type ButtonVariant = 
+  | "default"
+  | "destructive"
+  | "outline"
+  | "secondary"
+  | "ghost"
+  | "link"
+  | "gradient";
+
+export type ButtonSize = "default" | "sm" | "lg" | "icon";
+export type ButtonColor = keyof typeof buttonColors;
+export type GradientType = keyof typeof gradientStyles;
+
+const buttonVariants = cva(
+  "inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
+  {
+    variants: {
+      variant: {
+        default: "bg-primary text-primary-foreground hover:bg-primary/90",
+        destructive:
+          "bg-destructive text-destructive-foreground hover:bg-destructive/90",
+        outline:
+          "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
+        secondary:
+          "bg-secondary text-secondary-foreground hover:bg-secondary/80",
+        ghost: "hover:bg-accent hover:text-accent-foreground",
+        link: "text-primary underline-offset-4 hover:underline",
+      },
+      size: {
+        default: "h-10 px-4 py-2",
+        sm: "h-9 rounded-md px-3",
+        lg: "h-11 rounded-md px-8",
+        icon: "h-10 w-10",
+      },
+    },
+    defaultVariants: {
+      variant: "default",
+      size: "default",
+    },
+  }
+)
 
 interface BaseButtonProps {
   children?: ReactNode;
@@ -98,78 +144,106 @@ interface BaseButtonProps {
   gradient?: GradientType;
   withMotion?: boolean;
   className?: string;
+  asChild?: boolean;
 }
 
 type RegularButtonProps = BaseButtonProps & ButtonHTMLAttributes<HTMLButtonElement>;
 type MotionButtonProps = BaseButtonProps & HTMLMotionProps<"button">;
 type ButtonProps = RegularButtonProps | MotionButtonProps;
 
-const Button = ({
-  children,
-  variant = "primary",
-  size = "md",
-  color = "primary",
-  fullWidth = false,
-  isLoading = false,
-  leftIcon,
-  rightIcon,
-  gradient = "default",
-  withMotion = false,
-  className,
-  disabled,
-  ...props
-}: ButtonProps) => {
-  // Styles de base pour tous les boutons
-  const baseStyles = "font-medium rounded-lg inline-flex items-center justify-center transition-all duration-200 focus:outline-none focus:ring-3 focus:ring-offset-1";
+const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
+  ({
+    children,
+    variant = "default",
+    size = "default",
+    color = "primary",
+    fullWidth = false,
+    isLoading = false,
+    leftIcon,
+    rightIcon,
+    gradient = "default",
+    withMotion = false,
+    className,
+    disabled,
+    asChild = false,
+    ...props
+  }, ref) => {
+    const Comp = asChild ? Slot : "button"
+    const baseStyles = "font-medium rounded-lg inline-flex items-center justify-center transition-all duration-200 focus:outline-none focus:ring-3 focus:ring-offset-1";
 
-  // Sélectionner le style basé sur variante et couleur
-  const getVariantStyle = () => {
-    if (variant === "outline") {
-      return buttonColors[color]?.outline || buttonColors.primary.outline;
-    } else if (variant === "ghost") {
-      return buttonColors[color]?.ghost || buttonColors.primary.ghost;
-    } else if (variant === "gradient") {
-      return `bg-gradient-to-r text-white shadow-md hover:shadow-lg ${gradientStyles[gradient]}`;
-    } else {
-      // Pour primary, secondary, danger, success, warning, info
-      return buttonColors[variant]?.base || buttonColors[color]?.base || buttonColors.primary.base;
+    // Sélectionner le style basé sur variante et couleur
+    const getVariantStyle = () => {
+      if (variant === "outline") {
+        return buttonColors[color]?.outline || buttonColors.primary.outline;
+      } else if (variant === "ghost") {
+        return buttonColors[color]?.ghost || buttonColors.primary.ghost;
+      } else if (variant === "gradient") {
+        return `bg-gradient-to-r text-white shadow-md hover:shadow-lg ${gradientStyles[gradient]}`;
+      } else {
+        // Pour primary, secondary, danger, success, warning, info
+        return buttonColors[color]?.base || buttonColors.primary.base;
+      }
+    };
+
+    // Styles selon la taille
+    const sizeStyles = {
+      default: "text-sm px-4 py-2.5",
+      sm: "text-xs px-2.5 py-1.5",
+      lg: "text-base px-6 py-3",
+      icon: "h-10 w-10",
+    };
+
+    // Style pour la largeur
+    const widthStyles = fullWidth ? "w-full" : "";
+
+    const buttonClassNames = cn(
+      baseStyles,
+      getVariantStyle(),
+      sizeStyles[size],
+      widthStyles,
+      "disabled:opacity-50 disabled:cursor-not-allowed",
+      className
+    );
+
+    // Animations pour Framer Motion
+    const motionProps = {
+      whileHover: { scale: 1.02, transition: { duration: 0.2 } },
+      whileTap: { scale: 0.98 },
+    };
+
+    if (withMotion) {
+      return (
+        <motion.button
+          disabled={disabled || isLoading}
+          className={buttonClassNames}
+          {...motionProps}
+          {...(props as HTMLMotionProps<"button">)}
+        >
+          {isLoading ? (
+            <>
+              <svg className="mr-2 h-4 w-4 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+              Chargement...
+            </>
+          ) : (
+            <>
+              {leftIcon && <span className={cn("mr-2", !children && "mr-0")}>{leftIcon}</span>}
+              {children}
+              {rightIcon && <span className={cn("ml-2", !children && "ml-0")}>{rightIcon}</span>}
+            </>
+          )}
+        </motion.button>
+      );
     }
-  };
 
-  // Styles selon la taille
-  const sizeStyles = {
-    xs: "text-xs px-2 py-1",
-    sm: "text-xs px-2.5 py-1.5",
-    md: "text-sm px-4 py-2.5",
-    lg: "text-base px-6 py-3",
-    xl: "text-lg px-8 py-4",
-  };
-
-  // Style pour la largeur
-  const widthStyles = fullWidth ? "w-full" : "";
-
-  const buttonClassNames = cn(
-    baseStyles,
-    getVariantStyle(),
-    sizeStyles[size],
-    widthStyles,
-    "disabled:opacity-50 disabled:cursor-not-allowed",
-    className
-  );
-
-  // Animations pour Framer Motion
-  const motionProps = {
-    whileHover: { scale: 1.02, transition: { duration: 0.2 } },
-    whileTap: { scale: 0.98 },
-  };
-
-  if (withMotion) {
     return (
-      <motion.button
+      <Comp
         disabled={disabled || isLoading}
         className={buttonClassNames}
-        {...motionProps}
-        {...(props as HTMLMotionProps<"button">)}
+        ref={ref}
+        {...(props as ButtonHTMLAttributes<HTMLButtonElement>)}
       >
         {isLoading ? (
           <>
@@ -186,33 +260,10 @@ const Button = ({
             {rightIcon && <span className={cn("ml-2", !children && "ml-0")}>{rightIcon}</span>}
           </>
         )}
-      </motion.button>
+      </Comp>
     );
   }
+)
+Button.displayName = "Button"
 
-  return (
-    <button
-      disabled={disabled || isLoading}
-      className={buttonClassNames}
-      {...(props as ButtonHTMLAttributes<HTMLButtonElement>)}
-    >
-      {isLoading ? (
-        <>
-          <svg className="mr-2 h-4 w-4 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-          </svg>
-          Chargement...
-        </>
-      ) : (
-        <>
-          {leftIcon && <span className={cn("mr-2", !children && "mr-0")}>{leftIcon}</span>}
-          {children}
-          {rightIcon && <span className={cn("ml-2", !children && "ml-0")}>{rightIcon}</span>}
-        </>
-      )}
-    </button>
-  );
-};
-
-export { Button, buttonColors, gradientStyles, type ButtonProps, type ButtonVariant, type ButtonSize, type ButtonColor, type GradientType }; 
+export { Button, buttonColors, gradientStyles, buttonVariants }; 

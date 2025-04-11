@@ -1,11 +1,22 @@
+// ce fichier gere le composant statsCard
+// le composant statsCard est un composant qui permet de gerer les données dans les components
+// car on a besoin de gerer les données dans les components
+
 "use client";
 
 import { ReactNode } from "react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
-import { Card } from "./Card";
 import { Button } from "./button";
 
+
+// creation de l'interface StatsCardProps
+// on utilise ReactNode pour hériter de la classe ReactNode
+// on utilise icon pour gerer l'icone du composant statsCard
+// on utilise title pour gerer le titre du composant statsCard
+// on utilise value pour gerer la valeur du composant statsCard
+// on utilise trend pour gerer la tendance du composant statsCard
+// on utilise trendValue pour gerer la valeur de la tendance du composant statsCard
 interface StatsCardProps {
   icon?: ReactNode;
   title: string;
@@ -24,6 +35,13 @@ interface StatsCardProps {
     onClick: () => void;
   }[];
 }
+
+// creation du composant statsCard
+// on utilise icon pour gerer l'icone du composant statsCard
+// on utilise title pour gerer le titre du composant statsCard
+// on utilise value pour gerer la valeur du composant statsCard
+// on utilise trend pour gerer la tendance du composant statsCard
+// on utilise trendValue pour gerer la valeur de la tendance du composant statsCard
 
 export default function StatsCard({
   icon,

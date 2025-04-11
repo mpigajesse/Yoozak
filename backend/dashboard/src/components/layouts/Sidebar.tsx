@@ -5,10 +5,22 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { useAuthStore } from "@/store/authStore";
-import { HomeIcon, ShoppingBagIcon, UserIcon, WrenchScrewdriverIcon, Cog6ToothIcon, ArrowRightOnRectangleIcon, ShoppingCartIcon, UsersIcon, CalendarIcon } from '@heroicons/react/24/outline';
+import { 
+  HomeIcon, 
+  ShoppingBagIcon, 
+  UserIcon, 
+  WrenchScrewdriverIcon, 
+  Cog6ToothIcon, 
+  ArrowRightOnRectangleIcon, 
+  ShoppingCartIcon, 
+  UsersIcon, 
+  CalendarIcon,
+  BuildingOfficeIcon,
+  UserGroupIcon,
+  ChartBarIcon
+} from '@heroicons/react/24/outline';
 import { Button } from "@/components/ui/button";
 import { ChevronDown } from 'lucide-react';
-import { useMediaQuery } from '@/hooks/useMediaQuery';
 
 interface SubItem {
   label: string;
@@ -28,6 +40,8 @@ interface SidebarItemProps {
   onMobileClick?: () => void;
   notificationCount?: number;
   isMobile?: boolean;
+  badge?: string; // Ajout d'un badge pour identifier les pôles
+  badgeColor?: string; // Couleur du badge (pour les pôles)
 }
 
 interface SidebarProps {
@@ -53,8 +67,6 @@ export default function Sidebar({
   const [isMobile, setIsMobile] = useState(false);
   const pathname = usePathname();
   const logout = useAuthStore((state) => state.logout);
-  const isTabletMedia = useMediaQuery('(max-width: 1024px)');
-  const isMobileMedia = useMediaQuery('(max-width: 768px)');
 
   // Fermeture du menu mobile lors d'un clic sur un élément
   const handleMobileClose = () => {
@@ -120,53 +132,87 @@ export default function Sidebar({
       label: "Tableau de bord",
       href: "/dashboard",
     },
+    // PÔLE PRODUCTS
     {
       icon: <ShoppingBagIcon className="w-5 h-5 text-current" />,
-      label: "Produits",
+      label: "PRODUCTS",
       href: "/products",
+      badge: "PÔLE",
+      badgeColor: "bg-emerald-500",
       subItems: [
-        { label: "Articles", href: "/products" },
+        { label: "Articles", href: "/products/articles" },
         { label: "Catalogues", href: "/products/catalogues" },
         { label: "Catégories", href: "/products/categories" },
-        { label: "Creatives", href: "/products/creatives" },
+        { label: "Sous-catégories", href: "/products/sous-categories" },
+        { label: "Créatives", href: "/products/creatives" },
+        { label: "Produits", href: "/products/produits" },
         { label: "Produits - Catalogues", href: "/products/produits-catalogues" },
         { label: "Produits - Catégories", href: "/products/produits-categories" },
         { label: "Promotions", href: "/products/promotions" },
-        { label: "Sous-catégories", href: "/products/sous-categories" },
       ],
     },
+    // PÔLE COMMANDES
     {
       icon: <ShoppingCartIcon className="w-5 h-5 text-current" />,
-      label: "Commandes",
+      label: "COMMANDES",
       href: "/commandes",
+      badge: "PÔLE",
+      badgeColor: "bg-blue-500",
       subItems: [
-        { label: "Codes promo", href: "/commandes/codes-promo" },
         { label: "Commandes", href: "/commandes" },
-        { label: "Lignes de commande", href: "/commandes/lignes-commande" },
         { label: "Paniers", href: "/commandes/paniers" },
+        { label: "Lignes de commande", href: "/commandes/lignes-commande" },
         { label: "Remises", href: "/commandes/remises" },
+        { label: "Codes promo", href: "/commandes/codes-promo" },
         { label: "Retours", href: "/commandes/retours" },
         { label: "États de commande", href: "/commandes/etats-commande" },
       ],
     },
+    // PÔLE CLIENTS
     {
       icon: <UsersIcon className="w-5 h-5 text-current" />,
-      label: "Clients",
+      label: "CLIENTS",
       href: "/clients",
+      badge: "PÔLE",
+      badgeColor: "bg-yellow-500",
       subItems: [
         { label: "Clients", href: "/clients" },
         { label: "Avis", href: "/clients/avis" },
         { label: "Favoris", href: "/clients/favoris" },
+        { label: "CRM", href: "/clients/crm" },
+      ],
+    },
+    // ORGANISATION & UTILISATEURS
+    {
+      icon: <BuildingOfficeIcon className="w-5 h-5 text-current" />,
+      label: "Organisation",
+      href: "/organisation",
+      subItems: [
+        { label: "Pôles", href: "/organisation/poles" },
+        { label: "Services", href: "/organisation/services" },
+        { label: "Équipes", href: "/organisation/teams" },
       ],
     },
     {
-      icon: <WrenchScrewdriverIcon className="w-5 h-5 text-current" />,
-      label: "Rapports",
+      icon: <UserGroupIcon className="w-5 h-5 text-current" />,
+      label: "Utilisateurs",
+      href: "/users",
+      subItems: [
+        { label: "Tous les utilisateurs", href: "/users" },
+        { label: "Rôles & Permissions", href: "/users/roles" },
+        { label: "Invitations", href: "/users/invitations" },
+      ],
+    },
+    // OUTILS & ANALYSES
+    {
+      icon: <ChartBarIcon className="w-5 h-5 text-current" />,
+      label: "Rapports & Analyses",
       href: "/rapports",
       subItems: [
         { label: "Ventes", href: "/rapports/ventes" },
         { label: "Produits", href: "/rapports/produits" },
         { label: "Clients", href: "/rapports/clients" },
+        { label: "Performance par pôle", href: "/rapports/poles" },
       ],
     },
     {
@@ -174,11 +220,7 @@ export default function Sidebar({
       label: "Planning",
       href: "/planning",
     },
-    {
-      icon: <UserIcon className="w-5 h-5 text-current" />,
-      label: "Utilisateurs",
-      href: "/users",
-    },
+    // PARAMÈTRES & PROFIL
     {
       icon: <UserIcon className="w-5 h-5 text-current" />,
       label: "Mon Profil",
@@ -198,60 +240,80 @@ export default function Sidebar({
 
   return (
     <aside
-      className={`${
-        isMobile || isTablet
-          ? 'fixed left-0 top-0 z-50 h-full w-screen'
-          : 'relative h-full'
-      } bg-white shadow-md transition-all duration-300 dark:bg-gray-800 ${
-        isVisible ? 'block' : 'hidden'
-      } ${!isMobile && !isTablet && isCollapsed ? 'w-20' : 'w-64'}`}
-    >
-      <div className="flex h-full w-full flex-col overflow-y-auto bg-white px-3 py-5 dark:bg-gray-800">
-        {/* Logo */}
-        <div className={`mb-6 flex ${isCollapsed && !isMobile && !isTablet ? 'justify-center' : 'px-3'}`}>
-          <Link href="/dashboard" className="flex items-center">
-            {isCollapsed && !isMobile && !isTablet ? (
-              <span className="text-2xl font-bold text-primary-600 dark:text-primary-400">
-                Y
-              </span>
-            ) : (
-              <span className="text-2xl font-bold text-primary-600 dark:text-primary-400">
-                Yoozak
-              </span>
-            )}
-          </Link>
-        </div>
-
-        {/* Navigation */}
-        <div className="flex-1 px-2">
-          {!isCollapsed && (
-            <div className="mb-2 px-4 text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
-              Menu Principal
-        </div>
+      className={cn(
+        "flex flex-col h-screen bg-sidebar text-sidebar-text border-r border-sidebar-border transition-all duration-300 ease-in-out z-20 fixed lg:relative",
+        isCollapsed ? "w-16" : "w-64",
+        isMobile || isTablet ? "left-0" : ""
       )}
-          {sidebarItems.map((item, idx) => (
-              <SidebarItem
-              key={idx}
-                icon={item.icon}
-                label={item.label}
-                href={item.href}
-                isCollapsed={isCollapsed && !isMobile && !isTablet}
-                subItems={item.subItems}
+    >
+      {/* Logo et Bouton de toggle */}
+      <div className="flex items-center justify-between h-16 px-4 border-b border-sidebar-border">
+        <div className="flex items-center overflow-hidden">
+          {!isCollapsed && (
+            <h1 className="text-xl font-bold truncate text-sidebar-text">
+              <Link href="/">Yoozak</Link>
+            </h1>
+          )}
+          {isCollapsed && (
+            <h1 className="text-xl font-bold truncate text-sidebar-text">
+              <Link href="/">Y</Link>
+            </h1>
+          )}
+        </div>
+        
+        {/* Bouton de toggle pour desktop uniquement */}
+        {!isMobile && !isTablet && (
+          <button
+            onClick={toggleSidebar}
+            className="p-1 rounded-md text-sidebar-text hover:bg-sidebar-hover"
+            aria-label={isCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" viewBox="0 0 20 20" fill="currentColor">
+              {isCollapsed ? (
+                <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
+              ) : (
+                <path fillRule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd" />
+              )}
+            </svg>
+          </button>
+        )}
+      </div>
+
+      {/* Menu */}
+      <nav className="flex-1 overflow-y-auto overflow-x-hidden py-4">
+        <ul className="space-y-1 px-2">
+          {sidebarItems.map((item, index) => (
+            <SidebarItem
+              key={index}
+              icon={item.icon}
+              label={item.label}
+              href={item.href}
+              badge={item.badge}
+              badgeColor={item.badgeColor}
+              isActive={pathname === item.href || pathname?.startsWith(item.href + "/")}
+              isCollapsed={isCollapsed}
+              hasSubItems={item.subItems && item.subItems.length > 0}
+              subItems={item.subItems?.map((subItem) => ({
+                ...subItem,
+                isActive: pathname === subItem.href || pathname?.startsWith(subItem.href + "/")
+              }))}
               onMobileClick={handleMobileClose}
+              isMobile={isMobile || isTablet}
             />
           ))}
-        </div>
+        </ul>
+      </nav>
 
-        {/* Logout */}
-        <div className="mt-6 px-3">
-          <button 
-            className={`flex w-full items-center ${!isCollapsed || isMobile || isTablet ? 'gap-3' : 'justify-center'} rounded-lg bg-gray-100 px-3 py-2.5 text-red-600 hover:bg-red-50 dark:bg-gray-700 dark:text-red-400 dark:hover:bg-red-900/20 transition duration-150 ease-in-out`}
+      {/* Footer avec déconnexion */}
+      <div className="p-4 border-t border-sidebar-border">
+        <Button 
           onClick={logout}
+          className="w-full flex items-center justify-center gap-2 text-sidebar-text hover:text-white hover:bg-red-600 transition-colors"
+          variant="ghost"
         >
-            <ArrowRightOnRectangleIcon className="h-5 w-5" />
-            {(!isCollapsed || isMobile || isTablet) && <span>Déconnexion</span>}
-          </button>
-        </div>
+          <ArrowRightOnRectangleIcon className="w-5 h-5" />
+          {!isCollapsed && <span>Déconnexion</span>}
+        </Button>
       </div>
     </aside>
   );
@@ -267,144 +329,119 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
   subItems = [],
   onMobileClick,
   notificationCount,
-  isMobile = false
+  isMobile = false,
+  badge,
+  badgeColor,
 }) => {
   const pathname = usePathname();
-  const router = useRouter();
-  const [isCollapsedLocal, setIsCollapsedLocal] = useState(true);
-  const itemHasSubItems = subItems && subItems.length > 0;
+  const hasSubItems = hasSubItemsProp || (subItems && subItems.length > 0);
+  // Le sous-menu est ouvert si l'élément est actif ou si un de ses sous-éléments est actif
+  const [isSubMenuOpen, setIsSubMenuOpen] = useState(
+    isActiveProp || 
+    subItems.some(item => item.isActive || pathname === item.href || pathname?.startsWith(item.href + "/"))
+  );
   
-  // Vérifier si l'élément ou un sous-élément est actif
-  const isItemActive = pathname === href;
-  const isSubItemActive = itemHasSubItems && subItems.some(item => pathname === item.href);
-  const itemIsActive = isActiveProp || isItemActive || isSubItemActive;
-  
-  // Marquer comme actif si un sous-élément est actif
-  useEffect(() => {
-    if (isSubItemActive) {
-      setIsCollapsedLocal(false);
-    }
-  }, [pathname, isSubItemActive]);
-  
-  // Optimiser les actions tactiles
+  // Déterminer si l'élément est actif
+  const isActive = isActiveProp || 
+    pathname === href || 
+    pathname?.startsWith(href + "/") ||
+    subItems.some(item => pathname === item.href || pathname?.startsWith(item.href + "/"));
+
+  // Gérer le toggle du sous-menu
   const handleSubMenuToggle = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsCollapsedLocal(!isCollapsedLocal);
+    if (hasSubItems) {
+      e.preventDefault();
+      setIsSubMenuOpen(!isSubMenuOpen);
+    }
   };
   
-  // Gérer le clic sur un élément du menu mobile
+  // Gérer le clic sur l'élément du menu
   const handleClick = () => {
-    if (onMobileClick) {
+    if (isMobile && onMobileClick) {
       onMobileClick();
     }
   };
 
   return (
-    <div className="mb-1">
-      <Link
-        href={href}
-        onClick={handleClick}
+    <li>
+      <Link 
+        href={hasSubItems ? "#" : href} 
+        onClick={hasSubItems ? handleSubMenuToggle : handleClick}
         className={cn(
-          "group flex items-center justify-between rounded-md p-2 text-sm font-medium transition-colors",
-          "hover:bg-primary-50 hover:text-primary-800 dark:hover:bg-gray-800 dark:hover:text-gray-100",
-          "touch-optimized tap-feedback mobile-interactive", // Optimisation tactile améliorée
-          itemIsActive 
-            ? "bg-primary-100 text-primary-900 dark:bg-gray-800 dark:text-primary-400" 
-            : "text-gray-600 dark:text-gray-300",
-          // Zone de tap plus grande sur mobile
-          isMobile && "p-3"
+          "flex items-center px-3 py-2 rounded-md hover:bg-sidebar-hover transition-colors relative group",
+          isActive ? "bg-sidebar-active text-sidebar-active-text" : "text-sidebar-text",
+          isCollapsed ? "justify-center" : "justify-between"
         )}
       >
         <div className="flex items-center">
-          {icon && (
-            <div className={cn(
-              "mr-2 flex h-5 w-5 items-center justify-center rounded-md",
-              itemIsActive ? "text-primary-700 dark:text-primary-400" : "text-gray-500 dark:text-gray-400",
-              isMobile && "h-6 w-6" // Icônes plus grandes sur mobile
-            )}>
-              {icon}
-            </div>
-          )}
+          <span className="mr-3">{icon}</span>
           {!isCollapsed && (
-            <span className={cn(
-              "truncate transition-opacity",
-              isMobile && "text-base mobile-text" // Texte plus grand sur mobile
-            )}>
+            <span className="truncate">
               {label}
             </span>
           )}
         </div>
 
-        {/* Indicateur de notification (si présent) */}
-        {notificationCount && !isCollapsed && (
-          <span className="flex h-5 w-5 items-center justify-center rounded-full bg-primary-500 text-xs font-medium text-white">
-            {notificationCount > 99 ? '99+' : notificationCount}
+        {/* Badge pour identifier les pôles */}
+        {!isCollapsed && badge && (
+          <span className={`px-1.5 py-0.5 text-xs rounded-full text-white font-medium ${badgeColor || 'bg-gray-500'} ml-2`}>
+            {badge}
           </span>
         )}
-
-        {/* Chevron pour les éléments avec sous-menus */}
-        {itemHasSubItems && !isCollapsed && (
-          <button
-            onClick={handleSubMenuToggle}
-            className={cn(
-              "ml-auto flex h-6 w-6 items-center justify-center rounded-md",
-              "text-gray-400 hover:bg-gray-100 hover:text-gray-600",
-              "dark:text-gray-500 dark:hover:bg-gray-700 dark:hover:text-gray-300",
-              "transition-transform duration-200 ease-in-out",
-              "touch-optimized tap-feedback mobile-interactive", // Optimisation tactile améliorée
-              !isCollapsedLocal && "rotate-180"
-            )}
-            aria-label={isCollapsedLocal ? "Ouvrir le sous-menu" : "Fermer le sous-menu"}
-          >
-            <ChevronDown className="h-4 w-4" />
-          </button>
+        
+        {/* Flèche pour les sous-menus */}
+        {hasSubItems && !isCollapsed && (
+          <ChevronDown 
+            className={`w-4 h-4 transition-transform ${isSubMenuOpen ? 'transform rotate-180' : ''}`} 
+          />
+        )}
+        
+        {/* Indicateur de notification */}
+        {notificationCount && notificationCount > 0 && (
+          <span className={`absolute top-1 right-1 text-xs bg-red-500 text-white w-5 h-5 flex items-center justify-center rounded-full ${isCollapsed ? '' : 'mr-6'}`}>
+            {notificationCount}
+          </span>
+        )}
+        
+        {/* Tooltip pour mode collapsed */}
+        {isCollapsed && (
+          <div className="absolute left-full ml-2 top-0 z-50 w-auto opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+            <div className="bg-gray-900 text-white text-sm px-2 py-1 rounded whitespace-nowrap">
+              {label}
+              {badge && (
+                <span className={`ml-1 px-1 text-xs inline-flex items-center justify-center rounded-full text-white ${badgeColor || 'bg-gray-500'}`}>
+                  {badge}
+                </span>
+              )}
+            </div>
+          </div>
         )}
       </Link>
-
-      {/* Sous-menu avec animation fluide */}
-      {itemHasSubItems && !isCollapsed && (
-        <div
-          className={cn(
-            "overflow-hidden transition-all duration-300 ease-in-out",
-            isCollapsedLocal ? "max-h-0" : "max-h-96"
-          )}
-        >
-          <ul className="pl-4 pt-1 mobile-spaced">
-            {subItems.map((item, index) => (
-              <li key={index} className="mt-1">
-                  <Link
-                  href={item.href}
-                  onClick={handleClick}
-                    className={cn(
-                    "flex items-center rounded-md p-2 text-sm transition-colors",
-                    "hover:bg-primary-50 hover:text-primary-800",
-                    "dark:hover:bg-gray-800 dark:hover:text-gray-100",
-                    "touch-optimized tap-feedback mobile-interactive", // Optimisation tactile améliorée
-                    pathname === item.href
-                      ? "bg-primary-50 text-primary-800 dark:bg-gray-800 dark:text-primary-400"
-                      : "text-gray-600 dark:text-gray-400",
-                    // Zone de tap plus grande sur mobile
-                    isMobile && "p-3 text-base"
-                  )}
-                >
-                  {item.icon ? (
-                    <div className={cn(
-                      "mr-2 flex h-4 w-4 items-center justify-center",
-                      isMobile && "h-5 w-5" // Icônes plus grandes sur mobile
-                    )}>
-                      {item.icon}
-                    </div>
-                  ) : (
-                    <div className="mr-2 h-2 w-2 rounded-full bg-gray-400 dark:bg-gray-600" />
-                  )}
-                  <span className={cn("truncate", isMobile && "mobile-text")}>{item.label}</span>
-                  </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
+      
+      {/* Sous-menu */}
+      {hasSubItems && isSubMenuOpen && !isCollapsed && (
+        <ul className="mt-1 ml-6 space-y-1 border-l-2 border-sidebar-border pl-2">
+          {subItems.map((subItem, index) => (
+            <li key={index}>
+              <Link
+                href={subItem.href}
+                onClick={handleClick}
+                className={cn(
+                  "flex items-center px-3 py-2 text-sm rounded-md hover:bg-sidebar-hover transition-colors",
+                  subItem.isActive ||
+                  pathname === subItem.href ||
+                  pathname?.startsWith(subItem.href + "/")
+                    ? "text-sidebar-active-text bg-sidebar-active"
+                    : "text-sidebar-text"
+                )}
+              >
+                {subItem.icon && <span className="mr-2">{subItem.icon}</span>}
+                <span className="truncate">{subItem.label}</span>
+              </Link>
+            </li>
+          ))}
+        </ul>
       )}
-    </div>
+    </li>
   );
 }; 
